@@ -1,0 +1,2107 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GA4 ใน 7 วัน</title>
+<meta name="description" content="บทเรียน Google Analytics 4 ภาษาไทยสำหรับมือใหม่ ตั้งแต่ศูนย์จนติดตั้งผ่าน Google Tag Manager อ่านรายงาน และเตรียมสัมภาษณ์งาน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  try { var t = localStorage.getItem('ga4course:theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --surface-2:#f1efe9; --surface-3:#e6e3da;
+  --text:#1f2328; --muted:#5d6470; --border:#e2ded4;
+  --ga:#e8710a; --ga-soft:#fff1e2; --ga-ink:#994800;
+  --gtm:#1a73e8; --gtm-soft:#e8f0fe; --gtm-ink:#174ea6;
+  --ok:#1e8e3e; --ok-soft:#e6f4ea; --ok-ink:#0d652d;
+  --bad:#d93025; --bad-soft:#fce8e6; --bad-ink:#a50e0e;
+  --warn:#b26a00; --warn-soft:#fef6e0; --warn-ink:#7a4a00;
+  --violet:#7b4fd6; --violet-soft:#f1ebff; --violet-ink:#5530a8;
+  --code-bg:#1d2027; --code-text:#e6e8eb; --code-muted:#8d95a3;
+  --shadow:0 1px 2px rgba(20,20,20,.05),0 6px 20px rgba(20,20,20,.05);
+  --radius:14px;
+  --font:"IBM Plex Sans Thai","Leelawadee UI","Noto Sans Thai",Tahoma,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,"Courier New",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131519; --surface:#1b1e23; --surface-2:#22262d; --surface-3:#2c3139;
+    --text:#e8eaed; --muted:#a2a9b4; --border:#30353e;
+    --ga:#ff9b42; --ga-soft:#3a2614; --ga-ink:#ffc890;
+    --gtm:#7cadff; --gtm-soft:#162a49; --gtm-ink:#bcd3ff;
+    --ok:#5cc47c; --ok-soft:#163222; --ok-ink:#a6e3b8;
+    --bad:#ff7b72; --bad-soft:#3b1a19; --bad-ink:#ffb4ad;
+    --warn:#f0b54a; --warn-soft:#3a2d12; --warn-ink:#ffd98f;
+    --violet:#b69cff; --violet-soft:#2a2142; --violet-ink:#d9cbff;
+    --code-bg:#0e1014; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131519; --surface:#1b1e23; --surface-2:#22262d; --surface-3:#2c3139;
+  --text:#e8eaed; --muted:#a2a9b4; --border:#30353e;
+  --ga:#ff9b42; --ga-soft:#3a2614; --ga-ink:#ffc890;
+  --gtm:#7cadff; --gtm-soft:#162a49; --gtm-ink:#bcd3ff;
+  --ok:#5cc47c; --ok-soft:#163222; --ok-ink:#a6e3b8;
+  --bad:#ff7b72; --bad-soft:#3b1a19; --bad-ink:#ffb4ad;
+  --warn:#f0b54a; --warn-soft:#3a2d12; --warn-ink:#ffd98f;
+  --violet:#b69cff; --violet-soft:#2a2142; --violet-ink:#d9cbff;
+  --code-bg:#0e1014; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16.5px;line-height:1.8;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--gtm);text-underline-offset:3px}
+img,svg{max-width:100%}
+h1,h2,h3,h4{line-height:1.35;margin:0}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin:4px 0}
+b,strong{font-weight:600}
+code{font-family:var(--mono);font-size:.86em;background:var(--surface-2);border:1px solid var(--border);padding:.08em .4em;border-radius:6px;overflow-wrap:anywhere}
+small{font-size:.86em}
+
+/* ---------- layout ---------- */
+.layout{display:grid;grid-template-columns:292px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:22px 16px 22px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:18px;padding:0 6px;color:var(--text);text-decoration:none}
+.brand-mark{flex:none;width:36px;height:36px;border-radius:10px;background:linear-gradient(140deg,#f9ab00,var(--ga));display:grid;place-items:center}
+.brand small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);line-height:1.3}
+.progress{padding:12px 12px;border-radius:12px;background:var(--surface-2);font-size:13.5px}
+.progress-top{display:flex;justify-content:space-between;margin-bottom:6px;color:var(--muted)}
+.progress-top b{color:var(--text)}
+.progress-bar{height:8px;background:var(--surface-3);border-radius:99px;overflow:hidden}
+.progress-bar i{display:block;height:100%;width:0;background:var(--ok);border-radius:99px;transition:width .4s ease}
+.toc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.toc li{margin:0}
+.toc a{display:flex;gap:11px;align-items:flex-start;padding:8px 10px;border-radius:10px;color:var(--text);text-decoration:none;font-size:14.5px;line-height:1.45}
+.toc a:hover{background:var(--surface-2)}
+.toc a.active{background:var(--ga-soft);color:var(--ga-ink)}
+.toc .st{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted);margin-top:0;background:var(--surface)}
+.toc a.active .st{border-color:var(--ga);color:var(--ga-ink)}
+.toc a.done .st{background:var(--ok);border-color:var(--ok);color:#fff}
+.toc small{display:block;color:var(--muted);font-size:12.5px}
+.toc a.active small{color:inherit;opacity:.8}
+.toc .sep{height:1px;background:var(--border);margin:8px 10px}
+.side-foot{margin-top:auto;display:flex;gap:8px;padding:0 4px}
+.btn-ghost{font:inherit;font-size:13.5px;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
+.btn-ghost:hover{background:var(--surface-2)}
+.main{min-width:0}
+.content{max-width:880px;margin:0 auto;padding:44px 44px 120px}
+.mobile-bar{display:none}
+.scrim{display:none}
+@media (max-width:980px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:min(320px,86vw);transform:translateX(-102%);transition:transform .25s ease;z-index:60;box-shadow:var(--shadow)}
+  body.nav-open .sidebar{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55}
+  .mobile-bar{display:flex;position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;align-items:center;gap:12px;font-weight:600}
+  .mobile-bar .mb-prog{margin-left:auto;font-size:13px;font-weight:400;color:var(--muted)}
+  .content{padding:24px 16px 96px}
+  html{scroll-padding-top:70px}
+}
+
+/* ---------- hero ---------- */
+.hero{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:36px 36px 30px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,var(--ga-soft),transparent 70%);pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ga-ink);background:var(--ga-soft);padding:4px 12px;border-radius:99px;margin-bottom:14px}
+.hero h1{font-size:40px;letter-spacing:-.01em;margin-bottom:12px}
+.hero h1 span{color:var(--ga)}
+.hero .lead{font-size:18px;color:var(--muted);max-width:640px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{font-size:13.5px;padding:5px 12px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border)}
+@media (max-width:640px){.hero{padding:24px 20px}.hero h1{font-size:30px}.hero .lead{font-size:16.5px}}
+
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:22px 0 4px}
+.week a{display:block;text-decoration:none;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 10px 12px;font-size:13px;line-height:1.4;transition:transform .15s,border-color .15s}
+.week a:hover{transform:translateY(-2px);border-color:var(--ga)}
+.week b{display:block;font-size:12px;color:var(--ga-ink);margin-bottom:2px}
+@media (max-width:760px){.week{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- sections ---------- */
+section.block{padding-top:64px}
+.day-head{display:flex;flex-direction:column;gap:10px;padding-bottom:20px;margin-bottom:26px;border-bottom:1px solid var(--border)}
+.day-badge{align-self:flex-start;font-weight:700;font-size:13.5px;color:#fff;background:var(--ga);padding:3px 14px;border-radius:99px}
+.day-head h2{font-size:31px;letter-spacing:-.01em}
+.day-meta{color:var(--muted);font-size:14.5px}
+.goals{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px 8px;margin-top:6px}
+.goals h4{font-size:15px;margin-bottom:6px;color:var(--muted);font-weight:600}
+.goals ul{list-style:none;padding:0}
+.goals li{padding-left:28px;position:relative}
+.goals li::before{content:"";position:absolute;left:2px;top:9px;width:16px;height:16px;border-radius:5px;border:2px solid var(--ga)}
+h3.sub{font-size:22px;margin:40px 0 14px;display:flex;gap:10px;align-items:baseline}
+h3.sub .no{font-size:14px;font-weight:700;color:var(--ga-ink);background:var(--ga-soft);padding:1px 9px;border-radius:7px;flex:none}
+h4.mini{font-size:17px;margin:24px 0 10px}
+.muted{color:var(--muted)}
+.center{text-align:center}
+
+/* ---------- callouts ---------- */
+.callout{display:flex;gap:12px;border-radius:12px;padding:14px 16px;margin:18px 0;border:1px solid transparent;font-size:15.5px;line-height:1.75}
+.callout .ci{flex:none;font-size:19px;line-height:1.5}
+.callout .t{display:block;font-weight:700;margin-bottom:2px}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.callout.tip{background:var(--gtm-soft);border-color:color-mix(in srgb,var(--gtm) 25%,transparent);color:var(--text)}
+.callout.tip .t{color:var(--gtm-ink)}
+.callout.warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 30%,transparent)}
+.callout.warn .t{color:var(--warn-ink)}
+.callout.danger{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 30%,transparent)}
+.callout.danger .t{color:var(--bad-ink)}
+.callout.talk{background:var(--violet-soft);border-color:color-mix(in srgb,var(--violet) 30%,transparent)}
+.callout.talk .t{color:var(--violet-ink)}
+.callout.good{background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 30%,transparent)}
+.callout.good .t{color:var(--ok-ink)}
+
+/* ---------- steps / paths / ui names ---------- */
+.steps{counter-reset:s;list-style:none;padding:0;margin:16px 0 18px}
+.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:0 0 14px;min-height:32px}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-weight:700;font-size:14px;line-height:1}
+.steps.ga>li::before{background:var(--ga);color:#fff}
+.steps.gtm>li::before{background:var(--gtm);color:#fff}
+.steps ul{margin-top:6px}
+.path{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:.92em;vertical-align:baseline}
+.path b{font-weight:600;background:var(--surface-2);border:1px solid var(--border);padding:0 8px;border-radius:6px;line-height:1.7}
+.path i{font-style:normal;color:var(--muted)}
+.ui{font-weight:600;background:var(--gtm-soft);color:var(--gtm-ink);padding:0 8px;border-radius:6px;white-space:nowrap}
+kbd{font-family:var(--mono);font-size:.82em;padding:.05em .45em;border:1px solid var(--border);border-bottom-width:2px;border-radius:6px;background:var(--surface)}
+
+/* ---------- code ---------- */
+.codebox{margin:16px 0;border-radius:12px;background:var(--code-bg);overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.cb-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px 8px 14px;font-size:12.5px;color:var(--code-muted);border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--font)}
+.copy{font:inherit;font-size:12.5px;color:#e6e8eb;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:3px 12px;border-radius:99px;cursor:pointer}
+.copy:hover{background:rgba(255,255,255,.16)}
+.copy.ok{background:#1e8e3e;border-color:#1e8e3e}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto;color:var(--code-text);font-family:var(--mono);font-size:13.5px;line-height:1.7;tab-size:2}
+.codebox code{background:none;border:0;padding:0;font-size:inherit;white-space:pre;color:inherit}
+.codebox .c{color:var(--code-muted)}
+.codebox .k{color:#ffcc80}
+.codebox .s{color:#a5d6a7}
+.codebox .x{color:#ff8a80}
+.codebox.bad{box-shadow:inset 4px 0 0 #d93025}
+.codebox.good{box-shadow:inset 4px 0 0 #1e8e3e}
+
+/* ---------- tables ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface);margin:16px 0}
+table.tbl{width:100%;border-collapse:collapse;font-size:15px;line-height:1.6}
+.tbl th{background:var(--surface-2);text-align:left;padding:10px 14px;font-weight:600;white-space:nowrap}
+.tbl td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.tbl td:first-child{font-weight:600}
+.tbl.plain td:first-child{font-weight:400}
+.tbl code{white-space:nowrap;overflow-wrap:normal}
+
+/* ---------- figures / diagrams ---------- */
+figure.fig{margin:22px 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+figure.fig figcaption{font-size:13.5px;color:var(--muted);margin-top:14px;text-align:center}
+.fig-title{font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--muted);margin-bottom:14px;text-transform:uppercase}
+.flow{display:flex;align-items:stretch;gap:6px}
+.flow-step{flex:1;min-width:0;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 10px 12px;text-align:center;font-size:14px;line-height:1.5;position:relative}
+.flow-step .ico{font-size:26px;line-height:1.2;margin-bottom:4px}
+.flow-step b{display:block;font-size:14.5px}
+.flow-step small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.flow-step .n{position:absolute;top:-10px;left:-6px;width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--surface);font-size:12px;font-weight:700;display:grid;place-items:center}
+.flow-step.ga{background:var(--ga-soft);border-color:color-mix(in srgb,var(--ga) 40%,transparent)}
+.flow-step.gtm{background:var(--gtm-soft);border-color:color-mix(in srgb,var(--gtm) 40%,transparent)}
+.flow-step.ok{background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.flow-step.bad{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.flow-step.vi{background:var(--violet-soft);border-color:color-mix(in srgb,var(--violet) 40%,transparent)}
+.flow-arrow{flex:none;align-self:center;color:var(--muted);font-size:20px;font-weight:700}
+@media (max-width:720px){
+  .flow{flex-direction:column}
+  .flow-arrow{transform:rotate(90deg);align-self:center;line-height:1}
+  .flow-step{text-align:left;display:grid;grid-template-columns:40px 1fr;column-gap:8px;align-items:center}
+  .flow-step .ico{grid-row:span 3;margin:0;text-align:center}
+}
+
+.nest{border-radius:14px;padding:14px 14px 14px;border:2px solid}
+.nest-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.nest-h .lv{font-size:12px;font-weight:700;padding:1px 9px;border-radius:99px;color:#fff}
+.nest-h b{font-size:16px}
+.nest-h small{color:var(--muted)}
+.nest.acc{border-color:var(--violet);background:color-mix(in srgb,var(--violet-soft) 60%,var(--surface))}
+.nest.acc>.nest-h .lv{background:var(--violet)}
+.nest.prop{border-color:var(--ga);background:var(--surface)}
+.nest.prop>.nest-h .lv{background:var(--ga)}
+.streams{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stream{border:2px dashed var(--gtm);border-radius:12px;padding:10px 12px;background:var(--gtm-soft);font-size:14px;line-height:1.55}
+.stream .lv{display:inline-block;font-size:11.5px;font-weight:700;color:#fff;background:var(--gtm);padding:0 8px;border-radius:99px;margin-bottom:4px}
+.stream code{white-space:nowrap}
+@media (max-width:640px){.streams{grid-template-columns:1fr}}
+
+.parcel{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.box3d{width:150px;height:130px;position:relative;margin:0 auto}
+.box3d .face{position:absolute;inset:22px 0 0 0;background:#d9a066;border-radius:6px;display:grid;place-items:center;color:#4a2a07;font-family:var(--mono);font-weight:600;font-size:13px;box-shadow:inset 0 -10px 0 rgba(0,0,0,.08)}
+.box3d .lid{position:absolute;left:-6px;right:-6px;top:6px;height:26px;background:#e7b47c;border-radius:6px}
+.box3d .tape{position:absolute;left:50%;top:6px;bottom:0;width:22px;margin-left:-11px;background:rgba(255,255,255,.35)}
+.tags{display:flex;flex-direction:column;gap:8px}
+.tag-label{display:flex;gap:10px;align-items:center;background:var(--surface-2);border:1px solid var(--border);border-left:5px solid var(--ga);border-radius:8px;padding:6px 12px;font-size:14px}
+.tag-label code{background:none;border:0;padding:0}
+.tag-label.auto{border-left-color:var(--muted)}
+@media (max-width:560px){.parcel{grid-template-columns:1fr}}
+
+.dm-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px}
+.dm-table th,.dm-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:right}
+.dm-table th:first-child,.dm-table td:first-child{text-align:left}
+.dm-table thead th{font-weight:600;background:var(--surface-2)}
+.dm-table .dcol{background:color-mix(in srgb,var(--violet-soft) 70%,transparent)}
+.dm-table .mcol{background:color-mix(in srgb,var(--ga-soft) 70%,transparent)}
+.dm-labels{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-bottom:8px;font-size:13px;font-weight:700}
+.dm-labels span{padding:4px 10px;border-radius:8px;text-align:center}
+.dm-labels .d{background:var(--violet-soft);color:var(--violet-ink)}
+.dm-labels .m{background:var(--ga-soft);color:var(--ga-ink)}
+
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.versus>div{border-radius:14px;padding:16px;border:1px solid var(--border);background:var(--surface-2)}
+.versus h4{font-size:16px;margin-bottom:10px}
+.pagebox{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;font-family:var(--mono);font-size:12.5px;line-height:1.5}
+.pagebox .ln{padding:3px 8px;border-radius:6px;margin:3px 0}
+.pagebox .ln.r{background:var(--bad-soft);color:var(--bad-ink)}
+.pagebox .ln.b{background:var(--gtm-soft);color:var(--gtm-ink)}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chiprow span{font-size:12.5px;padding:2px 10px;border-radius:99px;background:var(--surface);border:1px solid var(--border)}
+.down{text-align:center;color:var(--muted);font-size:18px;line-height:1.2;margin:4px 0}
+@media (max-width:640px){.versus{grid-template-columns:1fr}}
+
+.ttv{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:stretch}
+.ttv .card{border-radius:14px;padding:14px;border:2px solid;background:var(--surface)}
+.ttv .card .lbl{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.ttv .card b{display:block;font-size:18px;margin:2px 0 6px}
+.ttv .card p{font-size:14px;margin:0;color:var(--muted)}
+.ttv .card .eg{margin-top:8px;font-size:13.5px;background:var(--surface-2);border-radius:8px;padding:6px 10px;color:var(--text)}
+.ttv .trg{border-color:var(--ga)} .ttv .trg .lbl{color:var(--ga-ink)}
+.ttv .tag{border-color:var(--gtm)} .ttv .tag .lbl{color:var(--gtm-ink)}
+.ttv .var{border-color:var(--violet)} .ttv .var .lbl{color:var(--violet-ink)}
+.ttv .op{align-self:center;font-size:22px;color:var(--muted);font-weight:700}
+@media (max-width:720px){.ttv{grid-template-columns:1fr}.ttv .op{transform:rotate(90deg);justify-self:center}}
+
+.funnel{display:flex;flex-direction:column;gap:6px}
+.f-row{display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:center}
+.f-label{font-size:14px;line-height:1.4}
+.f-label code{font-size:12px}
+.f-track{background:var(--surface-2);border-radius:8px;height:40px;position:relative;overflow:hidden}
+.f-bar{height:100%;width:var(--w);background:linear-gradient(90deg,var(--ga),#f9ab00);border-radius:8px;display:flex;align-items:center;padding:0 12px;color:#fff;font-weight:700;font-size:14px;white-space:nowrap;min-width:max-content}
+.f-drop{margin-left:202px;font-size:13px;color:var(--bad-ink);background:var(--bad-soft);border-radius:8px;padding:3px 10px;align-self:flex-start}
+@media (max-width:640px){.f-row{grid-template-columns:1fr;gap:4px}.f-drop{margin-left:0}}
+
+.url-anatomy{font-family:var(--mono);font-size:14px;line-height:2.1;word-break:break-all;background:var(--surface-2);border-radius:10px;padding:12px 14px}
+.url-anatomy span{padding:2px 4px;border-radius:5px}
+.u-base{color:var(--muted)}
+.u-src{background:var(--ga-soft);color:var(--ga-ink)}
+.u-med{background:var(--gtm-soft);color:var(--gtm-ink)}
+.u-cam{background:var(--violet-soft);color:var(--violet-ink)}
+.u-con{background:var(--ok-soft);color:var(--ok-ink)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+/* grid items may hold wide code blocks; let them shrink instead of widening the page */
+.week>*,.streams>*,.parcel>*,.versus>*,.ttv>*,.f-row>*,.two>*,.m-grid>*,.gloss>*,.mock-app>*,.dm-labels>*{min-width:0}
+.listcard{border-radius:14px;padding:14px 16px;border:1px solid var(--border);background:var(--surface)}
+.listcard h4{font-size:16px;margin-bottom:8px}
+.listcard ul{margin:0;padding-left:20px}
+.listcard.no{border-top:4px solid var(--bad)}
+.listcard.yes{border-top:4px solid var(--ok)}
+
+/* ---------- mock screens ---------- */
+.mock{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);font-size:13.5px;line-height:1.55;margin:4px 0}
+.mock-bar{display:flex;gap:10px;align-items:center;padding:7px 12px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)}
+.dots{display:flex;gap:5px;flex:none}
+.dots i{width:10px;height:10px;border-radius:50%;background:#ff5f57}
+.dots i:nth-child(2){background:#febc2e}
+.dots i:nth-child(3){background:#28c840}
+.mock-bar .url{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:2px 12px;font-family:var(--mono);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-top{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);font-weight:600;font-size:13.5px}
+.mock-top .logo-ga{width:20px;height:20px;border-radius:5px;background:linear-gradient(140deg,#f9ab00,#e8710a);flex:none}
+.mock-top .logo-gtm{width:20px;height:20px;border-radius:5px;background:#1a73e8;transform:rotate(45deg) scale(.8);flex:none}
+.mock-top .sp{margin-left:auto;display:flex;gap:8px;align-items:center;font-weight:400}
+.mock-app{display:grid;grid-template-columns:150px minmax(0,1fr);min-height:210px}
+.mock-nav{background:var(--surface-2);padding:10px 8px;font-size:13px;border-right:1px solid var(--border)}
+.mock-nav div{padding:5px 9px;border-radius:7px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-nav .on{background:var(--gtm-soft);color:var(--gtm-ink);font-weight:600}
+.mock-nav .grp{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding-top:10px}
+.mock-main{padding:14px 16px;min-width:0}
+.mock-main h5{font-size:15px;margin:0 0 10px}
+.m-field{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.m-label{font-size:11.5px;color:var(--muted)}
+.m-input{border:1px solid var(--border);border-radius:7px;padding:5px 10px;background:var(--surface);font-size:13px;display:flex;justify-content:space-between;gap:8px;min-height:30px;align-items:center}
+.m-input.mono{font-family:var(--mono);font-size:12.5px}
+.m-btn{display:inline-flex;align-items:center;gap:6px;background:#1a73e8;color:#fff;border-radius:99px;padding:4px 16px;font-size:13px;font-weight:600;white-space:nowrap}
+.m-btn.ghost{background:transparent;color:var(--gtm);border:1px solid var(--border)}
+.m-card{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.m-big{font-size:34px;font-weight:600;line-height:1.1}
+.m-row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.m-row:last-child{border-bottom:0}
+.m-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.m-toggle{display:inline-block;width:30px;height:16px;border-radius:99px;background:#1a73e8;position:relative;vertical-align:middle}
+.m-toggle::after{content:"";position:absolute;right:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff}
+.m-pill{display:inline-block;font-size:11.5px;padding:0 8px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border)}
+.m-pill.ok{background:var(--ok-soft);color:var(--ok-ink);border-color:transparent}
+.m-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.m-tbl th{text-align:right;font-weight:600;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.m-tbl td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.m-tbl th:first-child,.m-tbl td:first-child{text-align:left}
+.hl{box-shadow:0 0 0 3px var(--ga);border-radius:8px;position:relative}
+.pin{display:inline-grid;place-items:center;flex:none;width:21px;height:21px;border-radius:50%;background:var(--ga);color:#fff;font-size:11.5px;font-weight:700;line-height:1;vertical-align:middle;font-style:normal}
+.pin-abs{position:absolute;top:-11px;right:-11px;z-index:2}
+.mock-caption{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:6px;font-size:14.5px}
+.mock-caption li{display:flex;gap:10px;align-items:flex-start;margin:0}
+.mock-caption .pin{margin-top:3px}
+.scroll-x{overflow-x:auto}
+@media (max-width:640px){
+  .mock-app{grid-template-columns:96px minmax(0,1fr)}
+  .mock-nav{font-size:11.5px;padding:8px 5px}
+  .mock-nav div{padding:4px 6px}
+  .m-grid{grid-template-columns:1fr}
+}
+
+/* ---------- mission / quiz / done ---------- */
+.mission{background:var(--surface);border:2px dashed color-mix(in srgb,var(--ga) 70%,transparent);border-radius:var(--radius);padding:18px 20px 12px;margin:36px 0 18px}
+.mission h4{font-size:18px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.mission .hint{font-size:14px;color:var(--muted);margin-bottom:8px}
+.mission label{display:flex;gap:12px;align-items:flex-start;padding:7px 0;cursor:pointer;border-top:1px solid var(--border);font-size:15.5px;line-height:1.65}
+.mission label:first-of-type{border-top:0}
+.mission input[type=checkbox]{flex:none;accent-color:var(--ok);width:19px;height:19px;margin-top:4px;cursor:pointer}
+.mission input:checked+span{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 60%,transparent)}
+.quiz{margin:26px 0 10px}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.quiz-head h4{font-size:18px}
+.quiz-score{font-size:14px;color:var(--muted)}
+.q{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 16px 14px;margin:12px 0}
+.q .qt{font-weight:600;margin:0 0 10px;display:flex;gap:10px}
+.q .qt .qn{flex:none;color:var(--ga-ink)}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;font:inherit;font-size:15px;line-height:1.55;padding:9px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover:not([disabled]){border-color:var(--gtm);background:var(--gtm-soft)}
+.opt[disabled]{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok-ink);font-weight:600}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad-ink)}
+.q .fb{display:none;margin-top:10px;font-size:14.5px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.q.answered .fb{display:block}
+.q .retry{font:inherit;font-size:13px;margin-left:8px;border:0;background:none;color:var(--gtm);cursor:pointer;text-decoration:underline;padding:0}
+.done-row{margin-top:28px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border)}
+.done-row p{margin:0;color:var(--muted);font-size:15px}
+.done-btn{font:inherit;font-weight:600;font-size:15px;padding:10px 20px;border-radius:99px;border:none;background:var(--ok);color:#fff;cursor:pointer}
+.done-btn:hover{filter:brightness(1.05)}
+.done-btn[aria-pressed="true"]{background:var(--surface-3);color:var(--text)}
+
+/* ---------- interview ---------- */
+details.qa{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden}
+details.qa summary{padding:14px 44px 14px 16px;cursor:pointer;font-weight:600;list-style:none;display:flex;gap:10px;position:relative;line-height:1.6}
+details.qa summary::-webkit-details-marker{display:none}
+details.qa summary::after{content:"+";position:absolute;right:16px;top:12px;font-size:20px;color:var(--muted);font-weight:400}
+details.qa[open] summary::after{content:"−"}
+details.qa summary .qn{flex:none;color:var(--violet-ink);background:var(--violet-soft);border-radius:7px;padding:0 8px;font-size:13.5px;height:fit-content;margin-top:2px}
+details.qa .ans{padding:14px 16px 6px;border-top:1px dashed var(--border);font-size:15.5px}
+details.qa .ans .say{border-left:4px solid var(--violet);padding:4px 0 4px 14px;margin:0 0 12px}
+.kicker{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+
+/* ---------- glossary ---------- */
+.gloss-search{width:100%;font:inherit;font-size:15.5px;padding:11px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);margin:6px 0 14px}
+.gloss-search:focus{outline:none;border-color:var(--gtm)}
+.gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gloss>div{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14.5px;line-height:1.65}
+.gloss b{display:block;font-size:15.5px}
+.gloss .th{color:var(--muted);font-size:13px}
+@media (max-width:640px){.gloss{grid-template-columns:1fr}}
+
+footer.foot{margin-top:72px;padding-top:24px;border-top:1px solid var(--border);color:var(--muted);font-size:14px}
+footer.foot ul{padding-left:20px}
+:focus-visible{outline:3px solid var(--gtm);outline-offset:2px;border-radius:6px}
+@media print{.sidebar,.mobile-bar,.done-row,.copy{display:none!important}.layout{display:block}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="sidebar" id="sidebar" aria-label="สารบัญ">
+  <a class="brand" href="#top">
+    <span class="brand-mark" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="11" width="4" height="7" rx="2" fill="#fff"/><rect x="8" y="6" width="4" height="12" rx="2" fill="#fff"/><rect x="14" y="2" width="4" height="16" rx="2" fill="#fff"/></svg>
+    </span>
+    <span>GA4 ใน 7 วัน<small>ฉบับมือใหม่ เตรียมสัมภาษณ์</small></span>
+  </a>
+  <div class="progress" aria-live="polite">
+    <div class="progress-top"><span>ความคืบหน้า</span><b><span class="js-done-count">0</span>/7 วัน</b></div>
+    <div class="progress-bar"><i class="js-progress"></i></div>
+  </div>
+  <nav>
+    <ul class="toc" id="toc">
+      <li><a href="#start" data-sec="start"><span class="st">★</span><span>เริ่มต้นที่นี่<small>เตรียมของ 4 อย่าง</small></span></a></li>
+      <li class="sep" aria-hidden="true"></li>
+      <li><a href="#day1" data-sec="day1"><span class="st">1</span><span>วันที่ 1 · GA4 คืออะไร<small>ข้อมูลเดินทางยังไง + คำศัพท์</small></span></a></li>
+      <li><a href="#day2" data-sec="day2"><span class="st">2</span><span>วันที่ 2 · สร้าง &amp; ติดตั้ง<small>บัญชี GA4 + โค้ด gtag</small></span></a></li>
+      <li><a href="#day3" data-sec="day3"><span class="st">3</span><span>วันที่ 3 · Google Tag Manager<small>Tag / Trigger / Variable</small></span></a></li>
+      <li><a href="#day4" data-sec="day4"><span class="st">4</span><span>วันที่ 4 · วัดปุ่มสมัคร<small>Events + dataLayer + Key event</small></span></a></li>
+      <li><a href="#day5" data-sec="day5"><span class="st">5</span><span>วันที่ 5 · อ่านรายงาน<small>Reports, Funnel, UTM</small></span></a></li>
+      <li><a href="#day6" data-sec="day6"><span class="st">6</span><span>วันที่ 6 · PDPA &amp; Consent<small>เรื่องที่สายการเงินซีเรียส</small></span></a></li>
+      <li><a href="#day7" data-sec="day7"><span class="st">7</span><span>วันที่ 7 · ซ้อมสัมภาษณ์<small>17 คำถาม + checklist</small></span></a></li>
+      <li class="sep" aria-hidden="true"></li>
+      <li><a href="#glossary" data-sec="glossary"><span class="st">Aa</span><span>คำศัพท์ไทย–อังกฤษ<small>ค้นหาได้</small></span></a></li>
+    </ul>
+  </nav>
+  <div class="side-foot">
+    <button class="btn-ghost js-theme" type="button" aria-label="สลับโหมดสว่าง/มืด">◐ โหมดสี</button>
+  </div>
+</aside>
+<div class="scrim js-scrim"></div>
+
+<main class="main">
+  <div class="mobile-bar">
+    <button class="btn-ghost js-nav-open" type="button" aria-controls="sidebar">☰ สารบัญ</button>
+    <span>GA4 ใน 7 วัน</span>
+    <span class="mb-prog">เรียนแล้ว <span class="js-done-count">0</span>/7</span>
+  </div>
+
+  <div class="content" id="top">
+
+  <header class="hero">
+    <span class="eyebrow">📊 Google Analytics 4 · ภาษาไทย · เริ่มจากศูนย์</span>
+    <h1>GA4 ฉบับมือใหม่ <span>ใน 7 วัน</span></h1>
+    <p class="lead">สำหรับคนทำเว็บที่ไม่เคยแตะ Google Analytics มาก่อน เรียนจบแล้วคุณจะติดตั้ง GA4 ผ่าน Google Tag Manager ได้เอง วัดผลปุ่ม “สมัครบัตร” ได้ อ่านรายงานออก และตอบคำถามสัมภาษณ์ได้อย่างมั่นใจ</p>
+    <div class="chips">
+      <span class="chip">⏱ วันละ ~1–1.5 ชั่วโมง</span>
+      <span class="chip">🧰 ใช้ของฟรีทั้งหมด</span>
+      <span class="chip">🛠️ มีหน้าเว็บฝึกให้ลงมือจริง</span>
+      <span class="chip">🎯 เป้าหมาย: สัมภาษณ์ Web master สายการเงิน</span>
+    </div>
+    <nav class="week" aria-label="แผน 7 วัน">
+      <a href="#day1"><b>วันที่ 1</b>GA4 คืออะไร</a>
+      <a href="#day2"><b>วันที่ 2</b>สร้าง &amp; ติดตั้ง</a>
+      <a href="#day3"><b>วันที่ 3</b>Tag Manager</a>
+      <a href="#day4"><b>วันที่ 4</b>วัดปุ่มสมัคร</a>
+      <a href="#day5"><b>วันที่ 5</b>อ่านรายงาน</a>
+      <a href="#day6"><b>วันที่ 6</b>PDPA &amp; Consent</a>
+      <a href="#day7"><b>วันที่ 7</b>ซ้อมสัมภาษณ์</a>
+    </nav>
+  </header>
+
+  <section class="block" id="start">
+    <div class="day-head">
+      <span class="day-badge" style="background:var(--text);color:var(--surface)">เริ่มต้นที่นี่</span>
+      <h2>ก่อนเริ่ม: เตรียมของ 4 อย่าง</h2>
+      <div class="day-meta">ใช้เวลา ~15 นาที · ทำครั้งเดียว</div>
+    </div>
+
+    <ol class="steps">
+      <li><b>บัญชี Google (Gmail)</b> — ใช้ล็อกอิน GA4 และ Google Tag Manager ใช้ Gmail ส่วนตัวได้เลย</li>
+      <li><b>Google Chrome</b> — เครื่องมือทดสอบของ Google ทำงานดีที่สุดบน Chrome</li>
+      <li><b>VS Code + ส่วนขยาย “Live Server”</b> — ใช้เปิดหน้าเว็บฝึกเป็นลิงก์ <code>http://</code> (วิธีติดตั้งอยู่ในวันที่ 2)</li>
+      <li><b>ไฟล์ <code>practice-page.html</code></b> — หน้าเว็บสมัครบัตรเครดิตของแบรนด์สมมติ “DemoCard” อยู่ในโฟลเดอร์เดียวกับบทเรียนนี้ มีปุ่มและฟอร์มให้ลองวัดผลจริง</li>
+    </ol>
+
+    <div class="callout warn">
+      <span class="ci">⚠️</span>
+      <div><span class="t">ปิดตัวบล็อกโฆษณาบนหน้าเว็บฝึก</span>
+      ถ้าติดตั้ง AdBlock, uBlock Origin หรือใช้ Brave ให้ปิดสำหรับหน้าเว็บฝึก เพราะมันบล็อก GA4 และ GTM ทำให้ “ติดตั้งถูกแต่ข้อมูลไม่ขึ้น” ซึ่งเป็นสาเหตุอันดับ 1 ที่มือใหม่งง</div>
+    </div>
+
+    <h4 class="mini">เรียนยังไงให้ได้ผล</h4>
+    <div class="flow">
+      <div class="flow-step"><div class="ico">📖</div><b>อ่าน</b><small>อ่านทีละหัวข้อ ดูภาพประกอบ</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step ga"><div class="ico">🛠️</div><b>ลงมือทำ</b><small>ทำ “ภารกิจวันนี้” กับหน้าเว็บฝึก</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step gtm"><div class="ico">✅</div><b>ทำแบบทดสอบ</b><small>3–5 ข้อ รู้ผลทันที</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step ok"><div class="ico">🏁</div><b>กด “เรียนจบ”</b><small>สารบัญจะติ๊กให้ จำไว้ในเครื่อง</small></div>
+    </div>
+
+    <div class="callout tip">
+      <span class="ci">💡</span>
+      <div><span class="t">เรื่องภาษาบนหน้าจอ</span>
+      บทเรียนนี้ใช้ชื่อเมนูภาษาอังกฤษตามหน้าจอจริง ถ้า GA4 ของคุณขึ้นเป็นภาษาไทย แนะนำให้เปลี่ยนภาษาบัญชี Google เป็น English ชั่วคราว จะได้ตรงกับบทเรียนและตรงกับที่คนในบริษัทใช้คุยกัน</div>
+    </div>
+  </section>
+
+  <!-- ============================== DAY 1 ============================== -->
+  <section class="block day" id="day1" data-day="1">
+    <div class="day-head">
+      <span class="day-badge">วันที่ 1</span>
+      <h2>GA4 คืออะไร และข้อมูลเดินทางยังไง</h2>
+      <div class="day-meta">⏱ ~60 นาที · ทฤษฎี 70% ลงมือ 30%</div>
+      <div class="goals">
+        <h4>จบวันนี้คุณจะ…</h4>
+        <ul>
+          <li>อธิบายได้ภายใน 1 นาทีว่า GA4 คืออะไร และบริษัทเอาไปใช้ทำอะไร</li>
+          <li>เข้าใจโครงสร้าง Account → Property → Data stream</li>
+          <li>รู้จัก Event, Parameter, Dimension, Metric</li>
+          <li>เปิดดูบัญชีตัวอย่าง (Demo Account) ของ Google ที่มีข้อมูลจริงได้</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub"><span class="no">1.1</span>GA4 คือ “สมุดบันทึกพฤติกรรม” ของเว็บ</h3>
+    <p>ลองนึกถึงสาขาธนาคารสักแห่ง ผู้จัดการสาขาอยากรู้ว่าวันนี้มีคนเดินเข้ามากี่คน แต่ละคนมาเพราะอะไร (เห็นป้ายโฆษณา? เพื่อนแนะนำ?) เดินไปโต๊ะไหน หยิบโบรชัวร์บัตรใบไหน และกรอกใบสมัครจนจบหรือเปล่า</p>
+    <p><b>GA4 (Google Analytics 4)</b> ทำแบบเดียวกันกับเว็บไซต์ เป็นเครื่องมือฟรีของ Google ที่จดว่ามีคนเข้าเว็บกี่คน มาจากช่องทางไหน และทำอะไรบนเว็บบ้าง แล้วสรุปออกมาเป็นรายงานและกราฟ</p>
+
+    <div class="callout talk">
+      <span class="ci">🏦</span>
+      <div><span class="t">ทำไมบริษัทบัตรเครดิตถึงสนใจ GA4 มาก</span>
+      เว็บบริษัทบัตรเครดิตและสินเชื่อมีเป้าหมายชัดเจน คือให้คน <b>“สมัคร”</b> GA4 ช่วยตอบคำถามที่มีผลกับเงินค่าโฆษณาโดยตรง เช่น
+      <ul>
+        <li>โฆษณา Facebook หรือ Google Ads ตัวไหนพาคนมาสมัครได้จริง</li>
+        <li>คนกดปุ่มสมัครแล้วหลุดออกไปที่ขั้นตอนไหนของฟอร์ม</li>
+        <li>คนสมัครผ่านมือถือหรือคอมพิวเตอร์มากกว่ากัน</li>
+      </ul></div>
+    </div>
+
+    <h3 class="sub"><span class="no">1.2</span>ข้อมูลเดินทางจากเว็บไปถึงรายงานยังไง</h3>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 1 · เส้นทางของข้อมูล 1 ครั้ง</div>
+      <div class="flow">
+        <div class="flow-step"><span class="n">1</span><div class="ico">👤</div><b>ผู้ใช้</b><small>เปิดหน้าเว็บ แล้วกดปุ่ม “สมัครบัตร”</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step gtm"><span class="n">2</span><div class="ico">🏷️</div><b>โค้ดติดตาม (Tag)</b><small>โค้ดที่ฝังในเว็บ จับได้ว่ามีการกดปุ่ม</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step gtm"><span class="n">3</span><div class="ico">📨</div><b>ส่ง Event</b><small>ส่งข้อความ <code>apply_click</code> ไปที่ Google</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step ga"><span class="n">4</span><div class="ico">🗄️</div><b>GA4 เก็บข้อมูล</b><small>รวมกับข้อมูลของคนอื่น แล้วประมวลผล</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step ga"><span class="n">5</span><div class="ico">📈</div><b>รายงาน</b><small>“เมื่อวานมีคนกดสมัคร 120 ครั้ง”</small></div>
+      </div>
+      <figcaption>งานของ Web master ส่วนใหญ่อยู่ที่ขั้น 2–3: ทำให้เว็บส่งข้อมูลที่ <b>ถูกต้อง</b> และ <b>ครบ</b> ส่วนขั้น 5 เราต้องอ่านเป็นด้วย เพื่อเช็กว่าข้อมูลที่ส่งไปถูกจริง</figcaption>
+    </figure>
+
+    <h3 class="sub"><span class="no">1.3</span>โครงสร้าง: Account → Property → Data stream</h3>
+    <p>GA4 จัดเก็บเป็นชั้นๆ เหมือนกล่องซ้อนกล่อง ตอนสร้างบัญชีในวันที่ 2 คุณจะต้องตั้งชื่อทั้ง 3 ชั้นนี้</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 2 · กล่องซ้อนกล่องของ GA4 (ตัวอย่างบริษัทสมมติ)</div>
+      <div class="nest acc">
+        <div class="nest-h"><span class="lv">ACCOUNT</span><b>🏢 DemoCard Co., Ltd.</b><small>= บริษัท / องค์กร</small></div>
+        <div class="nest prop">
+          <div class="nest-h"><span class="lv">PROPERTY</span><b>📁 DemoCard (เว็บ + แอป)</b><small>= รายงาน 1 ชุด · ตั้งเขตเวลาและสกุลเงินที่นี่</small></div>
+          <div class="streams">
+            <div class="stream"><span class="lv">WEB STREAM</span><br>🌐 democard.co.th<br><small>Measurement ID:</small> <code>G-AB12CD34EF</code></div>
+            <div class="stream"><span class="lv">iOS APP</span><br>🍎 แอป DemoCard บน iPhone</div>
+            <div class="stream"><span class="lv">ANDROID APP</span><br>🤖 แอป DemoCard บน Android</div>
+          </div>
+        </div>
+      </div>
+      <figcaption>Data stream คือ “ท่อ” ที่ข้อมูลไหลเข้า แต่ละท่อมีรหัสของตัวเอง ท่อของเว็บใช้ <b>Measurement ID</b> ที่ขึ้นต้นด้วย <code>G-</code></figcaption>
+    </figure>
+    <div class="callout tip"><span class="ci">💡</span><div><span class="t">จำ G- ไว้ให้ดี</span>รหัส <code>G-XXXXXXXXXX</code> คือ “ที่อยู่” ที่บอกว่าข้อมูลจากเว็บต้องส่งไปที่ property ไหน คุณจะได้ใช้รหัสนี้แทบทุกวัน (ส่วนรหัสที่ขึ้นต้นด้วย <code>UA-</code> เป็นของ Google Analytics รุ่นเก่า ซึ่งเลิกใช้ไปแล้ว)</div></div>
+
+    <h3 class="sub"><span class="no">1.4</span>ใน GA4 ทุกอย่างคือ “Event”</h3>
+    <p>ทุกการกระทำบนเว็บถูกบันทึกเป็น <b>Event</b> (เหตุการณ์) เช่น เปิดหน้า = <code>page_view</code>, เลื่อนลงถึงล่างสุด = <code>scroll</code>, ส่งใบสมัครสำเร็จ = <code>generate_lead</code></p>
+    <p>แต่ละ event มี <b>Parameter</b> (รายละเอียดประกอบ) ติดไปด้วย ให้นึกภาพพัสดุหนึ่งกล่อง ชื่อบนกล่องคือชื่อ event ส่วนป้ายที่แปะอยู่ข้างกล่องคือ parameter</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 3 · Event 1 กล่อง + Parameter หลายป้าย</div>
+      <div class="parcel">
+        <div class="box3d" aria-hidden="true"><div class="lid"></div><div class="face">apply_click</div><div class="tape"></div></div>
+        <div class="tags">
+          <div class="tag-label">🏷️ <code>card_type</code> = <b>"cashback"</b> <small class="muted">← คนกดสมัครบัตรแบบไหน</small></div>
+          <div class="tag-label">🏷️ <code>button_location</code> = <b>"hero"</b> <small class="muted">← กดปุ่มตรงไหนของหน้า</small></div>
+          <div class="tag-label auto">🏷️ <code>page_location</code> = "https://democard.co.th/" <small class="muted">← GA4 ใส่ให้เอง</small></div>
+        </div>
+      </div>
+      <figcaption>Event ตอบว่า <b>“เกิดอะไรขึ้น”</b> ส่วน Parameter ตอบว่า <b>“รายละเอียดเป็นยังไง”</b></figcaption>
+    </figure>
+    <p>ถ้าเขียนเป็นโค้ด จะหน้าตาประมาณนี้ (วันที่ 4 คุณจะได้เขียนเอง):</p>
+    <div class="codebox"><div class="cb-head"><span>JavaScript · ตัวอย่างข้อมูล 1 event</span><button class="copy" type="button">คัดลอก</button></div><pre><code>{
+  event: <span class="s">'apply_click'</span>,       <span class="c">// ← ชื่อ event</span>
+  card_type: <span class="s">'cashback'</span>,     <span class="c">// ← parameter</span>
+  button_location: <span class="s">'hero'</span>    <span class="c">// ← parameter</span>
+}</code></pre></div>
+
+    <h3 class="sub"><span class="no">1.5</span>คำศัพท์ที่ต้องพูดได้คล่อง</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>คำ</th><th>ความหมายแบบง่าย</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td>Users</td><td>จำนวน “คน” ที่เข้าเว็บ (จริงๆ คือจำนวนเบราว์เซอร์หรืออุปกรณ์)</td><td>เปิดจาก Chrome ในคอม = 1 user</td></tr>
+        <tr><td>Sessions</td><td>จำนวน “รอบ” ที่เข้ามา ถ้าไม่ทำอะไรเลย 30 นาที ถือว่าจบรอบ</td><td>เข้าเช้า 1 รอบ บ่าย 1 รอบ = 2 sessions</td></tr>
+        <tr><td>Engaged session</td><td>รอบที่ “สนใจจริง” คืออยู่นานกว่า 10 วินาที หรือดู 2 หน้าขึ้นไป หรือเกิด key event</td><td>เข้ามาอ่าน 2 นาที = engaged</td></tr>
+        <tr><td>Engagement rate</td><td>% ของ session ที่ engaged (ส่วน Bounce rate = 100% − Engagement rate)</td><td>100 รอบ engaged 62 รอบ = 62%</td></tr>
+        <tr><td>Event count</td><td>จำนวนครั้งที่ event นั้นเกิดขึ้น</td><td><code>apply_click</code> เกิด 340 ครั้ง</td></tr>
+        <tr><td>Key event</td><td>event ที่สำคัญต่อธุรกิจ (เดิมเรียก “Conversion”)</td><td>ส่งใบสมัครสำเร็จ <code>generate_lead</code></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="sub"><span class="no">1.6</span>Dimension กับ Metric: “แบ่งตามอะไร” กับ “นับได้เท่าไหร่”</h3>
+    <p>รายงานใน GA4 ทุกหน้าเป็นตาราง คอลัมน์แรกเป็น <b>Dimension</b> (ข้อความที่ใช้แบ่งกลุ่ม) คอลัมน์ที่เหลือเป็น <b>Metric</b> (ตัวเลข)</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 4 · อ่านตารางรายงานให้เป็น</div>
+      <div class="dm-labels"><span class="d">DIMENSION · แบ่งตามอะไร</span><span class="m">METRIC · นับได้เท่าไหร่</span></div>
+      <div class="scroll-x"><table class="dm-table">
+        <thead><tr><th class="dcol">Device category</th><th class="mcol">Users</th><th class="mcol">Sessions</th><th class="mcol">Key events</th></tr></thead>
+        <tbody>
+          <tr><td class="dcol">mobile</td><td class="mcol">8,240</td><td class="mcol">11,032</td><td class="mcol">310</td></tr>
+          <tr><td class="dcol">desktop</td><td class="mcol">2,115</td><td class="mcol">2,870</td><td class="mcol">96</td></tr>
+          <tr><td class="dcol">tablet</td><td class="mcol">152</td><td class="mcol">181</td><td class="mcol">4</td></tr>
+        </tbody>
+      </table></div>
+      <figcaption>อ่านว่า “คนใช้มือถือ 8,240 คน เข้ามา 11,032 รอบ และส่งใบสมัคร 310 ครั้ง” (ตัวเลขสมมติ)<br>ตัวอย่าง Dimension อื่นๆ: ประเทศ, ช่องทางที่มา, ชื่อหน้า · ตัวอย่าง Metric: Users, Views, Engagement rate</figcaption>
+    </figure>
+
+    <h3 class="sub"><span class="no">1.7</span>GA4 ต่างจาก Universal Analytics (รุ่นเก่า) ยังไง</h3>
+    <p>Universal Analytics (UA) คือ Google Analytics รุ่นก่อน ซึ่ง <b>หยุดเก็บข้อมูลไปตั้งแต่ 1 ก.ค. 2023</b> ตอนนี้ทุกบริษัทใช้ GA4 แล้ว ความต่างที่ควรรู้มีดังนี้</p>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th></th><th>Universal Analytics (เก่า)</th><th>GA4 (ปัจจุบัน)</th></tr></thead>
+      <tbody>
+        <tr><td>แนวคิดหลัก</td><td>นับเป็น pageview และ session</td><td>ทุกอย่างเป็น event + parameter</td></tr>
+        <tr><td>เว็บ + แอป</td><td>แยกกันคนละที่</td><td>รวมอยู่ใน property เดียวได้</td></tr>
+        <tr><td>เป้าหมาย</td><td>เรียกว่า Goals</td><td>เรียกว่า Key events</td></tr>
+        <tr><td>รหัส</td><td><code>UA-XXXXX-1</code></td><td><code>G-XXXXXXXXXX</code></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout talk"><span class="ci">🎤</span><div><span class="t">ถ้าโดนถามว่า “GA4 คืออะไร” ตอบแบบนี้ได้เลย</span>
+    “GA4 เป็นเครื่องมือวัดผลเว็บและแอปของ Google ที่บันทึกทุกการกระทำของผู้ใช้เป็น event เช่น เปิดหน้า กดปุ่ม ส่งฟอร์ม แล้วสรุปเป็นรายงานว่าคนมาจากช่องทางไหนและทำอะไรต่อ ทีมจะได้รู้ว่าแคมเปญไหนพาคนมาสมัครได้จริง และควรปรับหน้าเว็บตรงไหน”</div></div>
+
+    <div class="mission">
+      <h4>🛠️ ภารกิจวันที่ 1</h4>
+      <p class="hint">Demo Account คือ GA4 ของร้าน Google Merchandise Store ที่ Google เปิดให้ทุกคนเข้าไปดูข้อมูลจริงได้ฟรี (สิทธิ์ดูอย่างเดียว)</p>
+      <label><input type="checkbox" data-id="d1-1"><span>เปิด <a href="https://support.google.com/analytics/answer/6367342" target="_blank" rel="noopener">หน้าวิธีเข้า Demo Account</a> → กดลิงก์ <span class="ui">Access demo account</span> → ล็อกอินด้วย Gmail → เลือก property <b>GA4 - Google Merch Shop</b></span></label>
+      <label><input type="checkbox" data-id="d1-2"><span>ไปที่ <span class="path"><b>Reports</b><i>›</i><b>Realtime overview</b></span> ดูว่าตอนนี้มีคนอยู่บนเว็บกี่คน และมาจากประเทศไหนบ้าง</span></label>
+      <label><input type="checkbox" data-id="d1-3"><span>ไปที่ <span class="path"><b>Reports</b><i>›</i><b>Reports snapshot</b></span> จดตัวเลข Users ของ 28 วันล่าสุด</span></label>
+      <label><input type="checkbox" data-id="d1-4"><span>ลองชี้ในตารางรายงานใดก็ได้ว่าคอลัมน์ไหนเป็น Dimension คอลัมน์ไหนเป็น Metric</span></label>
+      <label><input type="checkbox" data-id="d1-5"><span>ฝึกพูดคำตอบ “GA4 คืออะไร” ให้เพื่อนหรือคนที่บ้านฟังภายใน 1 นาที</span></label>
+    </div>
+
+    <div class="quiz" data-quiz="day1"></div>
+    <div class="done-row"><p>เรียนวันที่ 1 จบแล้ว? กดปุ่มเพื่อบันทึกความคืบหน้า</p><button class="done-btn" type="button" data-done="1" aria-pressed="false">✓ เรียนจบวันที่ 1</button></div>
+  </section>
+
+  <!-- ============================== DAY 2 ============================== -->
+  <section class="block day" id="day2" data-day="2">
+    <div class="day-head">
+      <span class="day-badge">วันที่ 2</span>
+      <h2>สร้างบัญชี GA4 แล้วติดตั้งบนหน้าเว็บฝึก</h2>
+      <div class="day-meta">⏱ ~75 นาที · ลงมือ 80%</div>
+      <div class="goals">
+        <h4>จบวันนี้คุณจะ…</h4>
+        <ul>
+          <li>เปิดหน้าเว็บฝึกเป็นลิงก์ <code>http://</code> ด้วย Live Server ได้</li>
+          <li>สร้าง Account, Property และ Web stream ได้เอง แล้วหา Measurement ID เจอ</li>
+          <li>ติดตั้งโค้ด gtag และเห็นตัวเองขึ้นในรายงาน Realtime</li>
+          <li>รู้ว่า Enhanced measurement เก็บอะไรให้อัตโนมัติ</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub"><span class="no">2.1</span>เปิดหน้าเว็บฝึกด้วย Live Server</h3>
+    <p>ถ้าดับเบิลคลิกไฟล์ HTML เบราว์เซอร์จะเปิดเป็น <code>file:///C:/...</code> ซึ่ง GA4 เก็บคุกกี้ไม่ได้ และเครื่องมือทดสอบของ GTM ก็เชื่อมต่อไม่ได้ เราจึงต้องเปิดผ่าน “เซิร์ฟเวอร์จำลอง” ในเครื่อง</p>
+    <div class="two">
+      <ol class="steps">
+        <li>เปิด VS Code → <span class="path"><b>File</b><i>›</i><b>Open Folder…</b></span> → เลือกโฟลเดอร์ <b>GoogleAnalytics4</b></li>
+        <li>กดไอคอน Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>) ค้นหา <b>Live Server</b> (ของ Ritwick Dey) แล้วกด Install</li>
+        <li>คลิกขวาที่ไฟล์ <code>practice-page.html</code> → <span class="ui">Open with Live Server</span></li>
+        <li>Chrome จะเปิด <code>http://127.0.0.1:5500/practice-page.html</code> ใช้ลิงก์นี้ตลอดคอร์ส</li>
+      </ol>
+      <figure class="fig" style="margin:8px 0">
+        <div class="mock">
+          <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span>Visual Studio Code</span></div>
+          <div class="mock-app" style="grid-template-columns:1fr;min-height:0">
+            <div class="mock-main" style="padding:10px 12px;position:relative">
+              <div class="m-label">EXPLORER · GOOGLEANALYTICS4</div>
+              <div class="m-row">📄 ga4-course.html</div>
+              <div class="m-row hl" style="padding-left:6px">📄 practice-page.html <span class="pin pin-abs">1</span></div>
+              <div class="m-card" style="margin:8px 0 0 30px;padding:6px 0;box-shadow:var(--shadow)">
+                <div style="padding:3px 12px">Open to the Side</div>
+                <div style="padding:3px 12px;background:var(--gtm-soft);color:var(--gtm-ink);font-weight:600">Open with Live Server <span class="pin">2</span></div>
+                <div style="padding:3px 12px">Copy Path</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="mock-caption"><li><span class="pin">1</span>คลิกขวาที่ไฟล์</li><li><span class="pin">2</span>เลือก Open with Live Server</li></ul>
+      </figure>
+    </div>
+    <div class="callout tip"><span class="ci">🌐</span><div><span class="t">อยากได้ลิงก์จริงไว้ให้คนอื่นเปิดดู (เช่น โชว์ตอนสัมภาษณ์)?</span>ลากโฟลเดอร์ไปวางที่ <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">app.netlify.com/drop</a> จะได้ลิงก์ <code>https://...netlify.app</code> ฟรีในไม่กี่วินาที</div></div>
+
+    <h3 class="sub"><span class="no">2.2</span>สร้างบัญชี GA4 ทีละขั้น</h3>
+    <ol class="steps ga">
+      <li>ไปที่ <a href="https://analytics.google.com" target="_blank" rel="noopener">analytics.google.com</a> ล็อกอินด้วย Gmail แล้วกด <span class="ui">Start measuring</span></li>
+      <li><b>Account creation</b> — Account name: <code>DemoCard Practice</code> ส่วน Data sharing settings ปล่อยตามค่าเริ่มต้น → <span class="ui">Next</span></li>
+      <li><b>Property creation</b> — Property name: <code>DemoCard Website</code> · Reporting time zone: <b>Thailand (GMT+07:00)</b> · Currency: <b>Thai Baht (฿)</b> → <span class="ui">Next</span></li>
+      <li><b>Business details</b> — Industry category: <b>Finance</b> · Business size: เลือกตามจริง (ฝึกเลือก Small ได้) → <span class="ui">Next</span></li>
+      <li><b>Business objectives</b> — เลือก <b>Generate leads</b> (หาลูกค้าที่สนใจ ตรงกับเว็บสมัครบัตร) → <span class="ui">Create</span> → เลือกประเทศ Thailand แล้วยอมรับ Terms of Service</li>
+      <li><b>Data collection</b> — เลือกแพลตฟอร์ม <span class="ui">Web</span></li>
+      <li>Website URL: ใส่ชื่อสมมติได้ เช่น <code>democard-practice.com</code> (ช่องนี้ใช้ตั้งชื่ออย่างเดียว ไม่ได้จำกัดว่าเก็บข้อมูลจากเว็บไหน) · Stream name: <code>DemoCard Web</code> · เปิด Enhanced measurement ค้างไว้ → <span class="ui">Create &amp; continue</span></li>
+      <li>หน้า <b>Web stream details</b> จะเปิดขึ้นมา คัดลอก <b>Measurement ID</b> (<code>G-</code> ตามด้วยตัวอักษร) เก็บไว้</li>
+    </ol>
+
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 5 · หน้าจอจำลอง: Property creation (ขั้นที่ 3)</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">analytics.google.com/analytics/web/#/provision/create</span></div>
+        <div class="mock-top"><span class="logo-ga"></span>Analytics<span class="sp"><span class="m-pill">Account creation ✓</span><span class="m-pill ok">Property creation</span><span class="m-pill">Business details</span></span></div>
+        <div class="mock-main" style="max-width:560px">
+          <h5>Create a property</h5>
+          <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Property name</span><span class="m-input">DemoCard Website</span><span class="pin pin-abs">1</span></div>
+          <div class="m-grid" style="margin-top:14px">
+            <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Reporting time zone</span><span class="m-input">Thailand · (GMT+07:00) ▾</span><span class="pin pin-abs">2</span></div>
+            <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Currency</span><span class="m-input">Thai Baht (฿) ▾</span><span class="pin pin-abs">3</span></div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px"><span class="m-btn ghost">Back</span><span class="m-btn">Next</span></div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>ตั้งชื่อ property ให้รู้ว่าเป็นเว็บอะไร</li>
+        <li><span class="pin">2</span>เขตเวลา <b>ต้อง</b> เป็น Thailand ไม่อย่างนั้นยอด “รายวัน” จะตัดวันผิดเวลา</li>
+        <li><span class="pin">3</span>สกุลเงินบาท ใช้กับตัวเลขมูลค่าในรายงาน</li>
+      </ul>
+    </figure>
+
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 6 · หน้าจอจำลอง: Web stream details (ขั้นที่ 8)</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">analytics.google.com · Admin › Data streams › DemoCard Web</span></div>
+        <div class="mock-main">
+          <h5>Web stream details</h5>
+          <div class="m-grid">
+            <div class="m-field"><span class="m-label">Stream name</span><span class="m-input">DemoCard Web</span></div>
+            <div class="m-field"><span class="m-label">Stream URL</span><span class="m-input">https://democard-practice.com</span></div>
+            <div class="m-field"><span class="m-label">Stream ID</span><span class="m-input mono">10234567890</span></div>
+            <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Measurement ID</span><span class="m-input mono"><b>G-AB12CD34EF</b><span>⧉</span></span><span class="pin pin-abs">1</span></div>
+          </div>
+          <div class="m-card" style="margin-top:6px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+            <span><b>Enhanced measurement</b><br><small class="muted">Page views, Scrolls, Outbound clicks + 4 more</small></span>
+            <span><span class="m-toggle"></span> ⚙️ <span class="pin">2</span></span>
+          </div>
+          <div class="m-card hl" style="margin-top:12px;position:relative"><b>Google tag</b> · <span class="m-btn ghost">View tag instructions</span><span class="pin pin-abs">3</span></div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span><b>Measurement ID</b> กดไอคอน ⧉ เพื่อคัดลอก (ของคุณจะเป็นตัวอักษรชุดอื่น)</li>
+        <li><span class="pin">2</span>สวิตช์ Enhanced measurement กด ⚙️ เพื่อเลือกว่าจะเก็บอะไรบ้าง</li>
+        <li><span class="pin">3</span>View tag instructions → Install manually คือที่เอาโค้ดติดตั้ง</li>
+      </ul>
+    </figure>
+    <div class="callout tip"><span class="ci">🧭</span><div><span class="t">ถ้าปิดหน้านี้ไปแล้ว จะกลับมายังไง</span>กดรูปเฟือง <b>Admin</b> มุมล่างซ้าย → <span class="path"><b>Data collection and modification</b><i>›</i><b>Data streams</b></span> → คลิกชื่อ stream</div></div>
+
+    <h3 class="sub"><span class="no">2.3</span>Enhanced measurement: เก็บให้อัตโนมัติ ไม่ต้องเขียนโค้ด</h3>
+    <p>แค่เปิดสวิตช์ GA4 ก็เก็บ event พื้นฐานเหล่านี้ให้เองทันที</p>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>ตัวเลือก</th><th>ชื่อ event ที่ได้</th><th>เกิดเมื่อ</th></tr></thead>
+      <tbody>
+        <tr><td>Page views</td><td><code>page_view</code></td><td>เปิดหน้า (รวมถึงเปลี่ยนหน้าในเว็บ React/Next.js)</td></tr>
+        <tr><td>Scrolls</td><td><code>scroll</code></td><td>เลื่อนลงถึง 90% ของหน้า</td></tr>
+        <tr><td>Outbound clicks</td><td><code>click</code></td><td>คลิกลิงก์ที่ออกไปเว็บอื่น</td></tr>
+        <tr><td>Site search</td><td><code>view_search_results</code></td><td>ใช้ช่องค้นหาในเว็บ (ดูจาก URL เช่น <code>?q=</code>)</td></tr>
+        <tr><td>Form interactions</td><td><code>form_start</code>, <code>form_submit</code></td><td>เริ่มกรอกฟอร์ม / ส่งฟอร์ม</td></tr>
+        <tr><td>Video engagement</td><td><code>video_start</code>, <code>video_progress</code>, <code>video_complete</code></td><td>ดูวิดีโอ YouTube ที่ฝังในเว็บ</td></tr>
+        <tr><td>File downloads</td><td><code>file_download</code></td><td>คลิกดาวน์โหลดไฟล์ เช่น PDF</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><span class="ci">⚠️</span><div><span class="t">Form interactions เชื่อถือไม่ได้ 100%</span>มันส่ง <code>form_submit</code> ทุกครั้งที่กดส่ง แม้กรอกผิดแล้วส่งไม่ผ่าน ในงานจริงฟอร์มสำคัญอย่างใบสมัคร จึงมักวัดเองด้วย dataLayer เพื่อส่ง event เฉพาะตอน “ส่งสำเร็จ” จริงๆ (วันที่ 4)</div></div>
+
+    <h3 class="sub"><span class="no">2.4</span>ติดตั้งโค้ด gtag.js</h3>
+    <p>ในหน้า Web stream details กด <span class="ui">View tag instructions</span> → แท็บ <span class="ui">Install manually</span> จะได้โค้ดหน้าตาแบบนี้ (รหัส G- จะเป็นของคุณ)</p>
+    <div class="codebox"><div class="cb-head"><span>HTML · วางใน &lt;head&gt; ของ practice-page.html ตรงจุดที่เขียนว่า “วันที่ 2”</span><button class="copy" type="button">คัดลอก</button></div><pre><code><span class="c">&lt;!-- Google tag (gtag.js) --&gt;</span>
+&lt;script async src=<span class="s">"https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"</span>&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag(<span class="s">'js'</span>, new Date());
+
+  gtag(<span class="s">'config'</span>, <span class="s">'G-XXXXXXXXXX'</span>);
+&lt;/script&gt;</code></pre></div>
+    <div class="tbl-wrap"><table class="tbl plain">
+      <thead><tr><th>บรรทัด</th><th>ทำหน้าที่อะไร</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;script async src=...&gt;</code></td><td>โหลดไลบรารีของ Google (<code>async</code> = ไม่ทำให้หน้าเว็บโหลดช้า)</td></tr>
+        <tr><td><code>window.dataLayer = ...</code></td><td>สร้าง “กล่องจดหมาย” ไว้ส่งข้อมูลให้ Google (วันที่ 4 จะใช้กล่องนี้)</td></tr>
+        <tr><td><code>gtag('config', 'G-...')</code></td><td>บอกว่าส่งข้อมูลไป property ไหน และส่ง <code>page_view</code> ทันที</td></tr>
+      </tbody>
+    </table></div>
+    <ol class="steps">
+      <li>เปิด <code>practice-page.html</code> ใน VS Code หาคอมเมนต์ <code>วันที่ 2: วางโค้ด gtag ตรงนี้</code></li>
+      <li>วางโค้ดแทนบรรทัดนั้น แล้วเปลี่ยน <code>G-XXXXXXXXXX</code> ทั้ง 2 จุดเป็นรหัสของคุณ</li>
+      <li>กด <kbd>Ctrl</kbd>+<kbd>S</kbd> แล้ว Live Server จะรีเฟรชหน้าเว็บให้เอง</li>
+    </ol>
+
+    <h3 class="sub"><span class="no">2.5</span>เช็กว่าใช้ได้: ดูตัวเองใน Realtime</h3>
+    <p>กลับไปที่ GA4 → <span class="path"><b>Reports</b><i>›</i><b>Realtime overview</b></span> ภายใน 1 นาทีควรเห็นตัวเลข 1 (คือตัวคุณเอง) ลองกดปุ่มและเลื่อนหน้าเว็บฝึก แล้วดูว่ามี event อะไรเพิ่มขึ้น</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 7 · หน้าจอจำลอง: Realtime overview</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">analytics.google.com · Reports › Realtime overview</span></div>
+        <div class="mock-main">
+          <div class="m-grid">
+            <div class="m-card hl" style="position:relative"><span class="m-label">ACTIVE USERS IN LAST 30 MINUTES</span><div class="m-big">1</div><small class="muted">DESKTOP 100%</small><span class="pin pin-abs">1</span></div>
+            <div class="m-card hl" style="position:relative"><span class="m-label">EVENT COUNT BY EVENT NAME</span>
+              <div class="m-row"><span>page_view</span><b>3</b></div>
+              <div class="m-row"><span>user_engagement</span><b>2</b></div>
+              <div class="m-row"><span>scroll</span><b>1</b></div>
+              <div class="m-row"><span>session_start</span><b>1</b></div>
+              <div class="m-row"><span>first_visit</span><b>1</b></div>
+              <span class="pin pin-abs">2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>จำนวนคนที่อยู่บนเว็บในช่วง 30 นาทีที่ผ่านมา</li>
+        <li><span class="pin">2</span>event ที่เกิดขึ้น: <code>first_visit</code> และ <code>session_start</code> GA4 สร้างเอง ส่วน <code>scroll</code> มาจาก Enhanced measurement</li>
+      </ul>
+    </figure>
+
+    <div class="callout danger"><span class="ci">🔧</span><div><span class="t">ไม่เห็นตัวเลขเลย? ไล่เช็กตามนี้</span>
+      <ol style="margin:4px 0 0">
+        <li>ปิดตัวบล็อกโฆษณาแล้วหรือยัง</li>
+        <li>เปิดผ่าน <code>http://127.0.0.1:5500</code> ไม่ใช่ <code>file:///</code></li>
+        <li>รหัสขึ้นต้นด้วย <code>G-</code> ถูกต้อง ครบทั้ง 2 จุด</li>
+        <li>กด Save แล้วหน้าเว็บรีเฟรชแล้ว</li>
+        <li><b>วิธีแบบ Frontend:</b> กด <kbd>F12</kbd> → แท็บ <b>Network</b> → พิมพ์ <code>collect</code> ในช่อง Filter → รีเฟรช ถ้าเห็น request ไปที่ <code>google-analytics.com/g/collect</code> แปลว่าข้อมูลถูกส่งออกไปแล้ว</li>
+      </ol></div></div>
+
+    <h3 class="sub"><span class="no">2.6</span>ตั้งค่าที่ต้องทำทันทีหลังสร้าง property</h3>
+    <p><b>Data retention</b> คือระยะเวลาที่ GA4 เก็บข้อมูลละเอียดไว้ให้ใช้ในเมนู Explore (วันที่ 5) ค่าเริ่มต้นคือ <b>2 เดือน</b> ซึ่งน้อยเกินไป ทำให้ดูข้อมูลย้อนหลังเทียบกับปีก่อนไม่ได้</p>
+    <ol class="steps ga">
+      <li><b>Admin</b> (เฟืองมุมล่างซ้าย) → <span class="path"><b>Data collection and modification</b><i>›</i><b>Data retention</b></span></li>
+      <li>Event data retention: เปลี่ยนจาก <b>2 months</b> เป็น <b>14 months</b> → <span class="ui">Save</span></li>
+    </ol>
+    <div class="callout talk"><span class="ci">🎤</span><div><span class="t">จุดที่ทำให้ดูเป็นมืออาชีพ</span>ถ้าโดนถามว่า “สร้าง property ใหม่แล้วต้องตั้งอะไรบ้าง” ให้ตอบว่า: ตั้งเขตเวลาและสกุลเงินให้ถูก, เปลี่ยน Data retention เป็น 14 เดือน, กรอง traffic ของพนักงานภายใน และเช็กว่า Enhanced measurement เปิดเฉพาะที่ต้องใช้ (เรื่องกรอง traffic อยู่ในวันที่ 6)</div></div>
+
+    <div class="mission">
+      <h4>🛠️ ภารกิจวันที่ 2</h4>
+      <label><input type="checkbox" data-id="d2-1"><span>เปิด <code>practice-page.html</code> ผ่าน Live Server ได้ที่ <code>http://127.0.0.1:5500/...</code></span></label>
+      <label><input type="checkbox" data-id="d2-2"><span>สร้าง Account, Property และ Web stream แล้วจด Measurement ID ไว้</span></label>
+      <label><input type="checkbox" data-id="d2-3"><span>วางโค้ด gtag ในหน้าเว็บฝึก แล้วเห็นตัวเองใน Realtime</span></label>
+      <label><input type="checkbox" data-id="d2-4"><span>เปิด DevTools → Network แล้วเห็น request <code>collect</code></span></label>
+      <label><input type="checkbox" data-id="d2-5"><span>เปลี่ยน Data retention เป็น 14 months</span></label>
+    </div>
+    <div class="quiz" data-quiz="day2"></div>
+    <div class="done-row"><p>เห็นตัวเองใน Realtime แล้วใช่ไหม? ถ้าใช่ ถือว่าผ่านวันที่ 2</p><button class="done-btn" type="button" data-done="2" aria-pressed="false">✓ เรียนจบวันที่ 2</button></div>
+  </section>
+
+  <!-- ============================== DAY 3 ============================== -->
+  <section class="block day" id="day3" data-day="3">
+    <div class="day-head">
+      <span class="day-badge">วันที่ 3</span>
+      <h2>Google Tag Manager: กล่องเครื่องมือที่ทุกบริษัทใช้</h2>
+      <div class="day-meta">⏱ ~90 นาที · วันที่สำคัญที่สุดของคอร์ส</div>
+      <div class="goals">
+        <h4>จบวันนี้คุณจะ…</h4>
+        <ul>
+          <li>อธิบายได้ว่า GTM ช่วยอะไร และทำไมบริษัทใหญ่ใช้กันทุกที่</li>
+          <li>เข้าใจ Tag, Trigger, Variable ด้วยประโยคเดียว</li>
+          <li>ติดตั้ง GTM แล้วส่งข้อมูลเข้า GA4 ผ่าน GTM แทนโค้ด gtag</li>
+          <li>ทดสอบด้วย Preview และ DebugView แล้ว Publish ขึ้นเว็บจริงได้</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub"><span class="no">3.1</span>ทำไมต้องมี GTM</h3>
+    <p>เว็บบริษัทใหญ่ไม่ได้มีแค่ GA4 ทีมการตลาดยังใช้ Facebook (Meta) Pixel, Google Ads, TikTok Pixel, LINE Tag และอีกหลายตัว ถ้าฝังโค้ดทุกตัวลงในเว็บตรงๆ ทุกครั้งที่จะเพิ่มหรือแก้ ต้องให้ dev แก้โค้ดแล้ว deploy ใหม่</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 8 · ไม่มี GTM กับ มี GTM</div>
+      <div class="versus">
+        <div>
+          <h4>😩 ไม่มี GTM</h4>
+          <div class="pagebox">&lt;head&gt;
+            <div class="ln r">&lt;script&gt; GA4 ... &lt;/script&gt;</div>
+            <div class="ln r">&lt;script&gt; Meta Pixel ... &lt;/script&gt;</div>
+            <div class="ln r">&lt;script&gt; Google Ads ... &lt;/script&gt;</div>
+            <div class="ln r">&lt;script&gt; TikTok Pixel ... &lt;/script&gt;</div>
+            <div class="ln r">&lt;script&gt; LINE Tag ... &lt;/script&gt;</div>
+          &lt;/head&gt;</div>
+          <p style="margin:10px 0 0;font-size:14.5px">แก้อะไรนิดเดียวก็ต้องแก้โค้ดเว็บ ต้องรอรอบ deploy และเสี่ยงทำเว็บพัง</p>
+        </div>
+        <div>
+          <h4>😎 มี GTM</h4>
+          <div class="pagebox">&lt;head&gt;
+            <div class="ln b">&lt;script&gt; GTM-XXXXXXX &lt;/script&gt; ← ฝังครั้งเดียว</div>
+          &lt;/head&gt;</div>
+          <div class="down">⬇</div>
+          <div class="pagebox" style="font-family:var(--font)"><b>📦 GTM Container</b> (จัดการผ่านหน้าเว็บ GTM)
+            <div class="chiprow"><span>GA4</span><span>Meta Pixel</span><span>Google Ads</span><span>TikTok</span><span>LINE Tag</span></div>
+          </div>
+          <p style="margin:10px 0 0;font-size:14.5px">เพิ่มหรือแก้ tag ได้เองในหน้าเว็บ GTM มี Preview ให้ทดสอบก่อน และย้อนเวอร์ชันได้</p>
+        </div>
+      </div>
+      <figcaption>GTM เหมือน “ปลั๊กพ่วง” เดินสายเข้าเว็บแค่ครั้งเดียว จากนั้นจะเสียบเครื่องมืออะไรเพิ่มก็ได้ ไม่ต้องรื้อผนังใหม่</figcaption>
+    </figure>
+
+    <h3 class="sub"><span class="no">3.2</span>สามคำที่ต้องรู้: Tag · Trigger · Variable</h3>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 9 · ประโยคเดียวที่อธิบาย GTM ได้ทั้งหมด</div>
+      <div class="ttv">
+        <div class="card trg"><span class="lbl">Trigger · เมื่อไหร่?</span><b>“เมื่อ…”</b><p>เงื่อนไขที่ทำให้ tag ทำงาน</p><div class="eg">เมื่อมีคนกดปุ่ม “สมัครเลย”</div></div>
+        <div class="op">→</div>
+        <div class="card tag"><span class="lbl">Tag · ทำอะไร?</span><b>“ให้ทำ…”</b><p>โค้ดที่จะทำงาน เช่น ส่งข้อมูลไป GA4</p><div class="eg">ส่ง event <code>apply_click</code> ไป GA4</div></div>
+        <div class="op">←</div>
+        <div class="card var"><span class="lbl">Variable · ใช้ข้อมูลอะไร?</span><b>“โดยใช้…”</b><p>ค่าที่ดึงมาใช้ใน tag หรือ trigger</p><div class="eg">card_type = <code>cashback</code></div></div>
+      </div>
+      <figcaption><b>“เมื่อ [Trigger] เกิดขึ้น → ให้ทำ [Tag] → โดยใช้ข้อมูลจาก [Variable]”</b><br>ทั้งหมดอยู่ในกล่องเดียวที่เรียกว่า <b>Container</b> (1 เว็บ = 1 container รหัสขึ้นต้นด้วย <code>GTM-</code>)</figcaption>
+    </figure>
+
+    <h3 class="sub"><span class="no">3.3</span>สร้าง GTM Account + Container</h3>
+    <ol class="steps gtm">
+      <li>ไปที่ <a href="https://tagmanager.google.com" target="_blank" rel="noopener">tagmanager.google.com</a> → <span class="ui">Create Account</span></li>
+      <li>Account name: <code>DemoCard Practice</code> · Country: <b>Thailand</b></li>
+      <li>Container name: <code>democard-practice.com</code> · Target platform: <b>Web</b> → <span class="ui">Create</span> → ยอมรับข้อตกลง</li>
+      <li>หน้าต่าง <b>Install Google Tag Manager</b> จะเด้งขึ้นมา มีโค้ด 2 ส่วน (ถ้าปิดไปแล้ว กดรหัส <code>GTM-XXXXXXX</code> ที่แถบด้านบนเพื่อเปิดอีกครั้ง)</li>
+    </ol>
+    <div class="callout danger"><span class="ci">🛑</span><div><span class="t">ลบโค้ด gtag ของวันที่ 2 ออกก่อน!</span>ถ้าหน้าเว็บมีทั้งโค้ด gtag และ GTM ที่ส่งไป GA4 property เดียวกัน ข้อมูลจะถูก <b>นับซ้ำ 2 เท่า</b> เป็นปัญหาที่เจอบ่อยในงานจริง และเป็นคำถามสัมภาษณ์ยอดฮิต ให้ลบโค้ด gtag ที่วางไว้เมื่อวานออกจาก practice-page.html ให้หมด</div></div>
+    <div class="codebox"><div class="cb-head"><span>ส่วนที่ 1 · วางใน &lt;head&gt; ให้สูงที่สุดเท่าที่ทำได้ (จุด “วันที่ 3 – ส่วนที่ 1”)</span><button class="copy" type="button">คัดลอก</button></div><pre><code><span class="c">&lt;!-- Google Tag Manager --&gt;</span>
+&lt;script&gt;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({<span class="s">'gtm.start'</span>:
+new Date().getTime(),event:<span class="s">'gtm.js'</span>});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!=<span class="s">'dataLayer'</span>?<span class="s">'&amp;l='</span>+l:<span class="s">''</span>;j.async=true;j.src=
+<span class="s">'https://www.googletagmanager.com/gtm.js?id='</span>+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,<span class="s">'script'</span>,<span class="s">'dataLayer'</span>,<span class="s">'GTM-XXXXXXX'</span>);&lt;/script&gt;
+<span class="c">&lt;!-- End Google Tag Manager --&gt;</span></code></pre></div>
+    <div class="codebox"><div class="cb-head"><span>ส่วนที่ 2 · วางต่อจาก &lt;body&gt; ทันที (จุด “วันที่ 3 – ส่วนที่ 2”)</span><button class="copy" type="button">คัดลอก</button></div><pre><code><span class="c">&lt;!-- Google Tag Manager (noscript) --&gt;</span>
+&lt;noscript&gt;&lt;iframe src=<span class="s">"https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"</span>
+height=<span class="s">"0"</span> width=<span class="s">"0"</span> style=<span class="s">"display:none;visibility:hidden"</span>&gt;&lt;/iframe&gt;&lt;/noscript&gt;
+<span class="c">&lt;!-- End Google Tag Manager (noscript) --&gt;</span></code></pre></div>
+    <p class="muted" style="font-size:15px">ส่วนที่ 2 ทำงานเฉพาะตอนที่ผู้ใช้ปิด JavaScript ซึ่งเกิดน้อยมาก แต่ควรใส่ตามมาตรฐาน · ให้คัดลอกโค้ดจากหน้าจอ GTM ของคุณเอง เพราะรหัส <code>GTM-</code> จะไม่เหมือนในตัวอย่าง</p>
+
+    <h3 class="sub"><span class="no">3.4</span>สร้าง Google tag ใน GTM (ส่งข้อมูลเข้า GA4)</h3>
+    <ol class="steps gtm">
+      <li>ในหน้า Workspace กด <span class="ui">Tags</span> → <span class="ui">New</span></li>
+      <li>ตั้งชื่อ tag ที่มุมบนซ้าย: <code>GA4 - Google tag</code></li>
+      <li>กดกล่อง <b>Tag Configuration</b> → เลือก <b>Google Tag</b></li>
+      <li>Tag ID: ใส่ Measurement ID ของคุณ <code>G-XXXXXXXXXX</code></li>
+      <li>กดกล่อง <b>Triggering</b> → เลือก <b>Initialization - All Pages</b> (ให้ทำงานก่อน tag อื่นทุกตัวในทุกหน้า)</li>
+      <li>กด <span class="ui">Save</span></li>
+    </ol>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 10 · หน้าจอจำลอง: หน้าแก้ไข Tag ใน GTM</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">tagmanager.google.com · Workspace › Tags › GA4 - Google tag</span></div>
+        <div class="mock-top"><span>✕</span><span class="hl" style="padding:0 8px;position:relative">GA4 - Google tag <span class="pin pin-abs">1</span></span><span class="sp"><span class="m-btn">Save</span></span></div>
+        <div class="mock-main" style="background:var(--surface-2);display:grid;gap:12px">
+          <div class="m-card">
+            <span class="m-label">Tag Configuration</span>
+            <div class="hl" style="display:flex;gap:10px;align-items:center;padding:6px;margin:6px 0 10px;position:relative"><span style="width:28px;height:28px;border-radius:7px;background:#1a73e8;display:inline-block"></span><span><b>Google Tag</b><br><small class="muted">Google Marketing Platform</small></span><span class="pin pin-abs">2</span></div>
+            <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Tag ID ⓘ</span><span class="m-input mono">G-AB12CD34EF</span><span class="pin pin-abs">3</span></div>
+            <small class="muted">› Configuration settings · › Shared event settings</small>
+          </div>
+          <div class="m-card">
+            <span class="m-label">Triggering</span>
+            <div class="hl" style="display:flex;gap:10px;align-items:center;padding:6px;margin-top:6px;position:relative"><span style="width:24px;height:24px;border-radius:50%;background:#9334e6;display:inline-block"></span><b>Initialization - All Pages</b><span class="pin pin-abs">4</span></div>
+          </div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>ชื่อ tag ตั้งเป็นระบบ “เครื่องมือ - รายละเอียด”</li>
+        <li><span class="pin">2</span>ประเภท tag = Google Tag</li>
+        <li><span class="pin">3</span>ใส่ Measurement ID <code>G-...</code> (ไม่ใช่ <code>GTM-...</code>)</li>
+        <li><span class="pin">4</span>Trigger = Initialization - All Pages</li>
+      </ul>
+    </figure>
+    <div class="callout tip"><span class="ci">🗂️</span><div><span class="t">ตั้งชื่อให้เป็นระบบตั้งแต่วันแรก</span>container ของบริษัทใหญ่อาจมี tag เป็นร้อยตัว ถ้าตั้งชื่อมั่ว จะหาไม่เจอและแก้ผิดตัว รูปแบบที่นิยมใช้คือ
+      <ul style="margin:4px 0 0"><li>Tag: <code>GA4 - Event - apply_click</code></li><li>Trigger: <code>CE - apply_click</code> (CE = Custom Event), <code>Click - benefits link</code></li><li>Variable: <code>DLV - card_type</code> (DLV = Data Layer Variable)</li></ul></div></div>
+    <div class="callout warn"><span class="ci">🆕</span><div><span class="t">หน้าตา GTM ปี 2026 อาจไม่เหมือนภาพนี้ทุกจุด</span>Google กำลังทยอยปรับหน้าตา GTM บางบัญชีจะเห็นส่วน <b>Settings</b> แยกออกมาเป็นที่ตั้งค่า Google tag และเมนู Triggers / Variables / Templates / Folders อาจย้ายไปอยู่ใต้แท็บ <b>Advanced</b> ถ้าหาเมนูไม่เจอให้ลองดูตรงนั้น หลักการ Tag / Trigger / Variable ยังเหมือนเดิมทุกอย่าง</div></div>
+
+    <h3 class="sub"><span class="no">3.5</span>ทดสอบด้วย Preview (Tag Assistant)</h3>
+    <p>อะไรที่ทำใน GTM จะยังไม่ขึ้นเว็บจริงจนกว่าจะกด Publish โหมด <b>Preview</b> จึงมีไว้ให้ทดลองบนเครื่องเราคนเดียวก่อน</p>
+    <ol class="steps gtm">
+      <li>กด <span class="ui">Preview</span> มุมขวาบนของ GTM แท็บใหม่ของ <b>Tag Assistant</b> จะเปิดขึ้น</li>
+      <li>ใส่ URL หน้าเว็บฝึก <code>http://127.0.0.1:5500/practice-page.html</code> → <span class="ui">Connect</span></li>
+      <li>หน้าเว็บฝึกจะเปิดในหน้าต่างใหม่ และมีกล่อง “Tag Assistant Connected” ที่มุมล่าง</li>
+      <li>กลับไปที่แท็บ Tag Assistant ด้านซ้ายคือลำดับเหตุการณ์ที่เกิดบนหน้า คลิก <b>Initialization</b> แล้วดูว่า <code>GA4 - Google tag</code> อยู่ในกลุ่ม <b>Tags Fired</b></li>
+    </ol>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 11 · หน้าจอจำลอง: Tag Assistant ตอน Preview</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">tagassistant.google.com</span></div>
+        <div class="mock-top"><span class="logo-gtm"></span>Tag Assistant <span class="m-pill ok">Connected</span><span class="sp"><small class="muted">127.0.0.1:5500/practice-page.html</small></span></div>
+        <div class="mock-app">
+          <div class="mock-nav">
+            <div class="grp">Summary</div>
+            <div>5 Window Loaded</div>
+            <div>4 DOM Ready</div>
+            <div>3 Container Loaded</div>
+            <div class="on hl" style="position:relative">2 Initialization <span class="pin pin-abs" style="right:-6px">1</span></div>
+            <div>1 Consent Initialization</div>
+          </div>
+          <div class="mock-main">
+            <div style="display:flex;gap:14px;border-bottom:1px solid var(--border);margin-bottom:10px;font-size:12.5px"><b style="border-bottom:2px solid #1a73e8;padding-bottom:4px">Tags</b><span class="muted">Variables</span><span class="muted">Data Layer</span><span class="muted">Consent</span></div>
+            <span class="m-label">Tags Fired</span>
+            <div class="m-card hl" style="margin:4px 0 12px;position:relative"><b>GA4 - Google tag</b><br><small class="muted">Google Tag · Fired 1 time(s)</small><span class="pin pin-abs">2</span></div>
+            <span class="m-label">Tags Not Fired</span>
+            <div class="m-card" style="margin-top:4px;opacity:.6"><small>None</small></div>
+          </div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>เส้นเวลาเหตุการณ์บนหน้า เรียงจากล่าง (เกิดก่อน) ขึ้นบน (เกิดทีหลัง)</li>
+        <li><span class="pin">2</span>tag ที่ทำงานแล้วจะอยู่ใน <b>Tags Fired</b> ถ้าอยู่ใน Tags Not Fired แปลว่า trigger ยังไม่ตรงเงื่อนไข</li>
+      </ul>
+    </figure>
+
+    <h3 class="sub"><span class="no">3.6</span>ดูข้อมูลฝั่ง GA4 ใน DebugView</h3>
+    <p>ตอนเปิด Preview ข้อมูลจะถูกส่งแบบ “debug mode” โดยอัตโนมัติ เลยดูได้ที่ <span class="path"><b>Admin</b><i>›</i><b>Data display</b><i>›</i><b>DebugView</b></span> ในหน้านี้จะเห็นเฉพาะข้อมูลจากเครื่องที่กำลังทดสอบ ไม่ปนกับคนอื่น</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 12 · หน้าจอจำลอง: DebugView</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">analytics.google.com · Admin › DebugView</span></div>
+        <div class="mock-main">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px"><b>DebugView</b><span class="m-input" style="font-size:12px">DEBUG DEVICE: Chrome · Windows ▾</span></div>
+          <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px">
+            <div style="border-left:3px solid #1a73e8;padding-left:12px">
+              <div class="m-row"><span>10:42:31</span><span class="m-pill">scroll</span></div>
+              <div class="m-row hl" style="padding:5px 6px;position:relative"><span>10:42:25</span><span class="m-pill ok">page_view</span><span class="pin pin-abs">1</span></div>
+              <div class="m-row"><span>10:42:25</span><span class="m-pill">session_start</span></div>
+              <div class="m-row"><span>10:42:25</span><span class="m-pill">first_visit</span></div>
+            </div>
+            <div class="m-card" style="position:relative"><span class="m-label">PARAMETERS · page_view</span>
+              <div class="m-row"><span>page_location</span><small>http://127.0.0.1:5500/…</small></div>
+              <div class="m-row"><span>page_title</span><small>DemoCard</small></div>
+              <div class="m-row"><span>debug_mode</span><small>1</small></div>
+              <span class="pin pin-abs">2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>คลิกที่ event เพื่อดูรายละเอียด</li>
+        <li><span class="pin">2</span>parameter ทั้งหมดที่ส่งมากับ event นั้น วันที่ 4 จะใช้หน้านี้เช็กว่า <code>card_type</code> ส่งมาถูกค่าไหม</li>
+      </ul>
+    </figure>
+
+    <h3 class="sub"><span class="no">3.7</span>Submit &amp; Publish: ขั้นที่คนลืมบ่อยที่สุด</h3>
+    <ol class="steps gtm">
+      <li>กลับไปหน้า GTM → กด <span class="ui">Submit</span> มุมขวาบน</li>
+      <li>Version name: <code>v1 - GA4 base tag</code> · Version description: “ติดตั้ง Google tag สำหรับ GA4”</li>
+      <li>กด <span class="ui">Publish</span> ตอนนี้ทุกคนที่เข้าเว็บก็จะถูกวัดผลแล้ว</li>
+    </ol>
+    <div class="callout tip"><span class="ci">⏪</span><div><span class="t">พังแล้วย้อนกลับได้</span>ที่แท็บ <b>Versions</b> จะเห็นประวัติทุกครั้งที่ Publish ถ้าเวอร์ชันใหม่มีปัญหา กดเลือกเวอร์ชันเก่าแล้ว Publish ซ้ำได้ทันที ไม่ต้องแก้โค้ดเว็บเลย</div></div>
+    <div class="callout talk"><span class="ci">🎤</span><div><span class="t">ประโยคที่ควรพูดในสัมภาษณ์</span>“ทุกครั้งที่แก้ GTM จะทดสอบใน Preview และเช็ก DebugView ก่อน แล้วตั้งชื่อเวอร์ชันให้รู้ว่าแก้อะไร ถ้ามีปัญหาจะย้อนกลับได้ทันที”</div></div>
+
+    <div class="mission">
+      <h4>🛠️ ภารกิจวันที่ 3</h4>
+      <label><input type="checkbox" data-id="d3-1"><span>ลบโค้ด gtag ของวันที่ 2 ออกจาก practice-page.html</span></label>
+      <label><input type="checkbox" data-id="d3-2"><span>สร้าง GTM Account + Container แล้ววางโค้ดทั้ง 2 ส่วน</span></label>
+      <label><input type="checkbox" data-id="d3-3"><span>สร้าง tag <code>GA4 - Google tag</code> ใช้ trigger Initialization - All Pages</span></label>
+      <label><input type="checkbox" data-id="d3-4"><span>เปิด Preview แล้วเห็น tag อยู่ใน Tags Fired</span></label>
+      <label><input type="checkbox" data-id="d3-5"><span>เห็น <code>page_view</code> ของตัวเองใน DebugView</span></label>
+      <label><input type="checkbox" data-id="d3-6"><span>Submit → Publish เวอร์ชันแรก พร้อมตั้งชื่อเวอร์ชัน</span></label>
+    </div>
+    <div class="quiz" data-quiz="day3"></div>
+    <div class="done-row"><p>Publish เวอร์ชันแรกได้แล้ว? เก่งมาก วันนี้ยากที่สุดแล้ว</p><button class="done-btn" type="button" data-done="3" aria-pressed="false">✓ เรียนจบวันที่ 3</button></div>
+  </section>
+
+  <!-- ============================== DAY 4 ============================== -->
+  <section class="block day" id="day4" data-day="4">
+    <div class="day-head">
+      <span class="day-badge">วันที่ 4</span>
+      <h2>วัดปุ่มสมัครและฟอร์ม ด้วย Events + dataLayer</h2>
+      <div class="day-meta">⏱ ~90 นาที · วันที่คนสาย Frontend ได้เปรียบ</div>
+      <div class="goals">
+        <h4>จบวันนี้คุณจะ…</h4>
+        <ul>
+          <li>แยก event 4 ประเภทได้ และตั้งชื่อ event ได้ถูกหลัก</li>
+          <li>เขียน Tracking plan ก่อนลงมือ</li>
+          <li>วัดการคลิกได้ 2 วิธี คือแบบไม่ต้องแก้โค้ด และแบบ <code>dataLayer.push</code></li>
+          <li>ตั้ง Key event และสร้าง Custom dimension ได้</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub"><span class="no">4.1</span>Event มี 4 ประเภท</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>ประเภท</th><th>ได้มายังไง</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td>1. Automatically collected</td><td>GA4 เก็บเองเสมอ ปิดไม่ได้</td><td><code>first_visit</code>, <code>session_start</code>, <code>user_engagement</code></td></tr>
+        <tr><td>2. Enhanced measurement</td><td>เปิดสวิตช์ใน Data stream (วันที่ 2)</td><td><code>page_view</code>, <code>scroll</code>, <code>click</code>, <code>file_download</code></td></tr>
+        <tr><td>3. Recommended</td><td>Google ตั้งชื่อมาตรฐานไว้แล้ว เราต้องส่งเอง</td><td><code>generate_lead</code>, <code>sign_up</code>, <code>login</code>, <code>purchase</code></td></tr>
+        <tr><td>4. Custom</td><td>ตั้งชื่อเองเมื่อไม่มีชื่อมาตรฐานที่ตรงกับสิ่งที่วัด</td><td><code>apply_click</code>, <code>calculator_use</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="ci">✅</span><div><span class="t">กฎการตั้งชื่อ event</span>
+      <ul style="margin:4px 0 0">
+        <li>ถ้ามีชื่อ Recommended ที่ความหมายตรง ให้ใช้ชื่อนั้นก่อน เช่น ส่งใบสมัครสำเร็จ → <code>generate_lead</code></li>
+        <li>ใช้ตัวพิมพ์เล็กคั่นด้วยขีดล่าง (snake_case) เช่น <code>apply_click</code> และขึ้นต้นด้วยตัวอักษร</li>
+        <li>ยาวไม่เกิน 40 ตัวอักษร ห้ามขึ้นต้นด้วย <code>ga_</code>, <code>google_</code>, <code>firebase_</code></li>
+        <li>ตัวพิมพ์เล็กกับใหญ่ถือเป็นคนละชื่อ <code>Apply_Click</code> ≠ <code>apply_click</code> ซึ่งจะทำให้ข้อมูลแตกเป็น 2 แถว</li>
+      </ul></div></div>
+
+    <h3 class="sub"><span class="no">4.2</span>เขียน Tracking plan ก่อนลงมือเสมอ</h3>
+    <p>มืออาชีพจะไม่เปิด GTM ก่อน แต่จะเขียนตารางก่อนว่า “จะวัดอะไร ตั้งชื่ออะไร ส่งรายละเอียดอะไร” เพื่อให้ทีมการตลาด, dev และ Web master เข้าใจตรงกัน เอกสารนี้เรียกว่า <b>Tracking plan</b> หรือ <b>Measurement plan</b> นี่คือ Tracking plan ของหน้าเว็บฝึก:</p>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>สิ่งที่ผู้ใช้ทำ</th><th>Event name</th><th>Parameters</th><th>วิธีวัด</th><th>Key event?</th></tr></thead>
+      <tbody>
+        <tr><td>คลิกลิงก์ “ดูสิทธิประโยชน์ทั้งหมด”</td><td><code>benefits_click</code></td><td>—</td><td>Click trigger (วิธีที่ 1)</td><td>ไม่</td></tr>
+        <tr><td>กดปุ่ม “สมัคร” ปุ่มใดก็ได้</td><td><code>apply_click</code></td><td><code>card_type</code>, <code>button_location</code></td><td>dataLayer (วิธีที่ 2)</td><td>ไม่</td></tr>
+        <tr><td>เริ่มกรอกฟอร์มครั้งแรก</td><td><code>apply_form_start</code></td><td><code>card_type</code></td><td>dataLayer (โบนัส)</td><td>ไม่</td></tr>
+        <tr><td>ส่งใบสมัครสำเร็จ</td><td><code>generate_lead</code></td><td><code>card_type</code>, <code>income_range</code></td><td>dataLayer (วิธีที่ 2)</td><td>✅ ใช่</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="sub"><span class="no">4.3</span>วิธีที่ 1: วัดคลิกแบบไม่ต้องแก้โค้ด (Click trigger)</h3>
+    <p>GTM ดักจับการคลิกบนหน้าเว็บได้เอง เราแค่บอกว่า “ถ้าคลิกโดนลิงก์ที่มี ID นี้ ให้ส่ง event” ในหน้าเว็บฝึก ลิงก์ “ดูสิทธิประโยชน์ทั้งหมด” มี <code>id="benefits-link"</code> อยู่แล้ว</p>
+    <ol class="steps gtm">
+      <li>เปิดตัวแปรสำเร็จรูปก่อน: <span class="path"><b>Variables</b><i>›</i><b>Built-In Variables</b><i>›</i><b>Configure</b></span> → ติ๊กทุกตัวในกลุ่ม <b>Clicks</b> (Click Element, Click Classes, Click ID, Click Target, Click URL, Click Text)</li>
+      <li>สร้าง trigger: <span class="path"><b>Triggers</b><i>›</i><b>New</b></span> → ชื่อ <code>Click - benefits link</code> → Trigger type: <b>Click - Just Links</b> → เลือก <b>Some Link Clicks</b> → ตั้งเงื่อนไข <code>Click ID</code> <b>equals</b> <code>benefits-link</code> → Save</li>
+      <li>สร้าง tag: <span class="path"><b>Tags</b><i>›</i><b>New</b></span> → ชื่อ <code>GA4 - Event - benefits_click</code> → Tag type: <b>Google Analytics: GA4 Event</b> → Measurement ID: <code>G-XXXXXXXXXX</code> → Event Name: <code>benefits_click</code> → Triggering: <code>Click - benefits link</code> → Save</li>
+      <li>เปิด Preview → คลิกลิงก์บนหน้าเว็บฝึก → ใน Tag Assistant จะเห็นเหตุการณ์ <b>Link Click</b> และ tag ของเราอยู่ใน Tags Fired</li>
+    </ol>
+    <div class="callout warn"><span class="ci">⚠️</span><div><span class="t">จุดอ่อนของวิธีนี้</span>ถ้าเงื่อนไขผูกกับข้อความบนปุ่ม (Click Text) หรือ CSS class วันไหนที่ทีม content เปลี่ยนคำ หรือ dev เปลี่ยนดีไซน์ tracking ก็จะเงียบไปเลยโดยไม่มีใครรู้ การผูกกับ <b>ID</b> ทนกว่า แต่สำหรับปุ่มที่สำคัญที่สุดอย่างปุ่มสมัคร บริษัทใหญ่มักใช้วิธีที่ 2</div></div>
+
+    <h3 class="sub"><span class="no">4.4</span>วิธีที่ 2: <code>dataLayer.push</code> วิธีที่บริษัทใหญ่ใช้กับปุ่มสำคัญ</h3>
+    <p><b>dataLayer</b> คือ JavaScript array ธรรมดา (<code>window.dataLayer</code>) ทำหน้าที่เป็น “กล่องจดหมาย” ระหว่างเว็บกับ GTM เว็บหยอดจดหมาย (object) ลงกล่อง แล้ว GTM คอยเปิดอ่าน ข้อดีคือส่งข้อมูลธุรกิจที่หน้าจอไม่ได้แสดงไปด้วยได้ เช่น ผู้ใช้เลือกบัตรประเภทไหน และไม่พังเวลาเปลี่ยนดีไซน์</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 13 · เส้นทางของ dataLayer</div>
+      <div class="flow">
+        <div class="flow-step"><span class="n">1</span><div class="ico">👆</div><b>ผู้ใช้กดปุ่ม</b><small>“สมัครเลย” บนบัตรแคชแบ็ก</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step vi"><span class="n">2</span><div class="ico">📮</div><b>โค้ดเว็บ push</b><small><code>{event:'apply_click', card_type:'cashback'}</code></small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step gtm"><span class="n">3</span><div class="ico">🎯</div><b>GTM: Trigger ทำงาน</b><small>Custom Event = <code>apply_click</code></small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step gtm"><span class="n">4</span><div class="ico">🏷️</div><b>GTM: Tag ส่งข้อมูล</b><small>อ่าน card_type จาก Variable</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step ga"><span class="n">5</span><div class="ico">📊</div><b>GA4</b><small>ได้ event พร้อม parameter</small></div>
+      </div>
+      <figcaption>Frontend เป็นคนเขียนขั้น 2 · Web master หรือทีม analytics ตั้งค่าขั้น 3–4 ใน GTM</figcaption>
+    </figure>
+    <p>โค้ดนี้มีอยู่ใน practice-page.html แล้ว ลองเปิดดูได้:</p>
+    <div class="codebox"><div class="cb-head"><span>JavaScript · ใน practice-page.html</span><button class="copy" type="button">คัดลอก</button></div><pre><code>document.getElementById(<span class="s">'hero-apply'</span>).addEventListener(<span class="s">'click'</span>, function () {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: <span class="s">'apply_click'</span>,        <span class="c">// ← key "event" พิเศษ: GTM ใช้ตัดสินว่า Custom Event ไหนเกิด</span>
+    card_type: <span class="s">'not_selected'</span>,
+    button_location: <span class="s">'hero'</span>
+  });
+});</code></pre></div>
+    <p>ถ้าทำเว็บด้วย React / Next.js (หรือ vibe code) หน้าตาจะประมาณนี้:</p>
+    <div class="codebox"><div class="cb-head"><span>React (JSX)</span><button class="copy" type="button">คัดลอก</button></div><pre><code>&lt;button
+  onClick={() =&gt; window.dataLayer?.push({
+    event: <span class="s">'apply_click'</span>,
+    card_type: <span class="s">'cashback'</span>,
+    button_location: <span class="s">'card_list'</span>
+  })}
+&gt;
+  สมัครเลย
+&lt;/button&gt;</code></pre></div>
+    <div class="callout tip"><span class="ci">🤖</span><div><span class="t">ใช้กับ vibe code</span>สั่ง AI ได้เลย เช่น <i>“ตอนกดปุ่มสมัคร ให้ push dataLayer event ชื่อ apply_click พร้อม card_type และ button_location ห้ามส่งข้อมูลส่วนตัว”</i> แล้วเปิด Preview ตรวจทุกครั้งว่าค่าที่ส่งออกไปถูกจริง</div></div>
+
+    <h4 class="mini">ตั้งค่าใน GTM: 3 ชิ้น (Variable → Trigger → Tag)</h4>
+    <ol class="steps gtm">
+      <li><b>Variable:</b> <span class="path"><b>Variables</b><i>›</i><b>User-Defined Variables</b><i>›</i><b>New</b></span> → ชื่อ <code>DLV - card_type</code> → ประเภท <b>Data Layer Variable</b> → Data Layer Variable Name: <code>card_type</code> → Save<br><small class="muted">ทำซ้ำอีก 2 ตัว: <code>DLV - button_location</code> (ชื่อ <code>button_location</code>) และ <code>DLV - income_range</code> (ชื่อ <code>income_range</code>) ชื่อต้องสะกดตรงกับในโค้ดทุกตัวอักษร</small></li>
+      <li><b>Trigger:</b> <span class="path"><b>Triggers</b><i>›</i><b>New</b></span> → ชื่อ <code>CE - apply_click</code> → ประเภท <b>Custom Event</b> → Event name: <code>apply_click</code> → This trigger fires on: <b>All Custom Events</b> → Save</li>
+      <li><b>Tag:</b> <span class="path"><b>Tags</b><i>›</i><b>New</b></span> → ชื่อ <code>GA4 - Event - apply_click</code> → <b>Google Analytics: GA4 Event</b> → Measurement ID: <code>G-XXXXXXXXXX</code> → Event Name: <code>apply_click</code> → เปิด <b>Event Parameters</b> แล้วกด Add parameter 2 แถว (ดูภาพ) → Triggering: <code>CE - apply_click</code> → Save</li>
+    </ol>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 14 · หน้าจอจำลอง: Tag ประเภท GA4 Event พร้อม Parameters</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">tagmanager.google.com · Tags › GA4 - Event - apply_click</span></div>
+        <div class="mock-top"><span>✕</span><span>GA4 - Event - apply_click</span><span class="sp"><span class="m-btn">Save</span></span></div>
+        <div class="mock-main" style="background:var(--surface-2);display:grid;gap:12px">
+          <div class="m-card">
+            <span class="m-label">Tag Configuration · Google Analytics: GA4 Event</span>
+            <div class="m-grid" style="margin-top:6px">
+              <div class="m-field"><span class="m-label">Measurement ID</span><span class="m-input mono">G-AB12CD34EF</span></div>
+              <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Event Name</span><span class="m-input mono">apply_click</span><span class="pin pin-abs">1</span></div>
+            </div>
+            <span class="m-label">▾ Event Parameters</span>
+            <div class="hl" style="padding:6px;margin-top:6px;position:relative">
+              <div class="m-grid" style="gap:6px"><span class="m-input mono">card_type</span><span class="m-input mono">{{DLV - card_type}} 🧩</span></div>
+              <div class="m-grid" style="gap:6px;margin-top:6px"><span class="m-input mono">button_location</span><span class="m-input mono">{{DLV - button_location}} 🧩</span></div>
+              <span class="pin pin-abs">2</span>
+            </div>
+          </div>
+          <div class="m-card"><span class="m-label">Triggering</span><div style="display:flex;gap:10px;align-items:center;margin-top:6px"><span style="width:22px;height:22px;border-radius:50%;background:#e8710a;display:inline-block"></span><b>CE - apply_click</b><span class="pin">3</span></div></div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>ชื่อ event ที่จะไปโผล่ใน GA4 ต้องตรงกับ Tracking plan</li>
+        <li><span class="pin">2</span>ซ้าย = ชื่อ parameter ที่ GA4 จะเห็น · ขวา = กดไอคอน 🧩 เพื่อเลือก Variable ค่าจะเปลี่ยนไปตามที่เว็บ push มา</li>
+        <li><span class="pin">3</span>trigger แบบ Custom Event ที่สร้างไว้ในขั้นที่ 2</li>
+      </ul>
+    </figure>
+    <div class="callout tip"><span class="ci">🧠</span><div><span class="t">ทริคมือโปร: เก็บ Measurement ID ไว้ใน Variable</span>สร้าง Variable ประเภท <b>Constant</b> ชื่อ <code>Const - GA4 ID</code> ใส่ค่า <code>G-XXXXXXXXXX</code> แล้วใช้ <code>{{Const - GA4 ID}}</code> ในทุก tag วันไหนต้องเปลี่ยน ID ก็แก้แค่ที่เดียว</div></div>
+    <p><b>ทำซ้ำกับ <code>generate_lead</code>:</b> สร้าง trigger <code>CE - generate_lead</code> (Custom Event ชื่อ <code>generate_lead</code>) และ tag <code>GA4 - Event - generate_lead</code> ที่ส่ง parameter <code>card_type</code> กับ <code>income_range</code> ในหน้าเว็บฝึก event นี้จะถูก push เฉพาะตอนส่งฟอร์มผ่านการตรวจแล้วเท่านั้น</p>
+    <div class="two">
+      <div class="codebox bad" style="margin:6px 0"><div class="cb-head"><span>❌ ห้ามทำเด็ดขาด</span><button class="copy" type="button">คัดลอก</button></div><pre><code>dataLayer.push({
+  event: <span class="s">'generate_lead'</span>,
+  <span class="x">full_name: 'สมชาย ใจดี',</span>
+  <span class="x">phone: '0812345678'</span>
+});</code></pre></div>
+      <div class="codebox good" style="margin:6px 0"><div class="cb-head"><span>✅ แบบที่ถูกต้อง</span><button class="copy" type="button">คัดลอก</button></div><pre><code>dataLayer.push({
+  event: <span class="s">'generate_lead'</span>,
+  card_type: <span class="s">'cashback'</span>,
+  income_range: <span class="s">'30k_50k'</span>
+});</code></pre></div>
+    </div>
+    <p class="muted" style="font-size:15px">ชื่อและเบอร์โทรเป็นข้อมูลส่วนบุคคล (PII) ห้ามส่งเข้า GA4 รายละเอียดอยู่ในวันที่ 6 · สังเกตว่าส่งรายได้เป็น “ช่วง” ไม่ใช่ตัวเลขจริง</p>
+
+    <h3 class="sub"><span class="no">4.5</span>ทดสอบแล้ว Publish</h3>
+    <ol class="steps gtm">
+      <li>กด <span class="ui">Preview</span> แล้วกดปุ่ม “สมัครเลย” บนหน้าเว็บฝึก</li>
+      <li>ที่ Tag Assistant ด้านซ้ายจะมีเหตุการณ์ <code>apply_click</code> ให้คลิกดู → <b>Tags Fired</b> ต้องมี <code>GA4 - Event - apply_click</code></li>
+      <li>เปลี่ยนไปแท็บ <b>Variables</b> แล้วเช็กว่า <code>DLV - card_type</code> มีค่าถูกต้อง (ถ้าเป็น <code>undefined</code> แปลว่าสะกดชื่อไม่ตรง)</li>
+      <li>เปิด GA4 DebugView คลิก event <code>apply_click</code> แล้วดูว่า parameter มาครบ</li>
+      <li>กรอกฟอร์มแล้วกดส่ง เช็ก <code>generate_lead</code> แบบเดียวกัน</li>
+      <li>Submit → Version name <code>v2 - apply_click + generate_lead</code> → Publish</li>
+    </ol>
+    <div class="callout tip"><span class="ci">🔍</span><div><span class="t">หน้าเว็บฝึกมีตัวช่วย</span>ที่มุมขวาล่างของ practice-page.html มีกล่อง <b>dataLayer</b> แสดงทุกอย่างที่ถูก push แบบเรียลไทม์ ใช้เช็กได้ว่าเว็บส่งอะไรออกไป ก่อนจะไปดูฝั่ง GTM หรือจะพิมพ์ <code>dataLayer</code> ใน Console ของ DevTools ก็ได้เหมือนกัน</div></div>
+
+    <h3 class="sub"><span class="no">4.6</span>ตั้ง <code>generate_lead</code> เป็น Key event</h3>
+    <p>event ทุกตัวถูกนับเหมือนกันหมด จนกว่าเราจะบอก GA4 ว่าตัวไหน “สำคัญต่อธุรกิจ” ซึ่งก็คือ Key event พอตั้งแล้ว รายงานหลายหน้าจะมีคอลัมน์ Key events และ Key event rate ให้ดู</p>
+    <div class="two">
+      <div>
+        <h4 class="mini" style="margin-top:4px">วิธี A: สร้างล่วงหน้า (ทำได้ทันที)</h4>
+        <ol class="steps ga">
+          <li><span class="path"><b>Admin</b><i>›</i><b>Data display</b><i>›</i><b>Key events</b></span></li>
+          <li><span class="ui">New key event</span> → พิมพ์ <code>generate_lead</code> → Save</li>
+        </ol>
+      </div>
+      <div>
+        <h4 class="mini" style="margin-top:4px">วิธี B: กดดาวจากรายการ event</h4>
+        <ol class="steps ga">
+          <li><span class="path"><b>Admin</b><i>›</i><b>Data display</b><i>›</i><b>Events</b></span></li>
+          <li>กดรูปดาว ☆ ท้ายแถวของ event (event จะโผล่ในรายการหลังมีข้อมูลเข้ามาแล้ว อาจต้องรอถึง 24 ชม.)</li>
+        </ol>
+      </div>
+    </div>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 15 · หน้าจอจำลอง: Admin › Events</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">analytics.google.com · Admin › Data display › Events</span></div>
+        <div class="mock-main scroll-x">
+          <table class="m-tbl">
+            <thead><tr><th>Event name</th><th>Count</th><th>Users</th><th>Mark as key event</th></tr></thead>
+            <tbody>
+              <tr><td>page_view</td><td>1,204</td><td>311</td><td>☆</td></tr>
+              <tr><td>apply_click</td><td>186</td><td>97</td><td>☆</td></tr>
+              <tr class="hl"><td><b>generate_lead</b></td><td>42</td><td>40</td><td style="color:#e8710a;font-size:16px">★ <span class="pin">1</span></td></tr>
+              <tr><td>scroll</td><td>530</td><td>205</td><td>☆</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ul class="mock-caption"><li><span class="pin">1</span>ดาวสีส้ม = เป็น Key event แล้ว (ตัวเลขสมมติ)</li></ul>
+    </figure>
+    <div class="callout warn"><span class="ci">📛</span><div><span class="t">ชื่อที่เปลี่ยนไป: Conversions → Key events</span>GA4 เคยเรียกสิ่งนี้ว่า “Conversions” แต่ปี 2024 เปลี่ยนชื่อเป็น <b>Key events</b> ส่วนคำว่า “Conversion” ตอนนี้หมายถึง conversion ที่ใช้ใน Google Ads ถ้าไปอ่านบทความเก่าแล้วเจอคำว่า Conversions ให้เข้าใจว่าหมายถึงสิ่งเดียวกัน</div></div>
+
+    <h3 class="sub"><span class="no">4.7</span>Custom dimension: ทำให้ parameter ไปโผล่ในรายงาน</h3>
+    <p>parameter ที่ตั้งชื่อเอง เช่น <code>card_type</code> จะเห็นใน DebugView ก็จริง แต่จะ <b>ยังไม่โผล่</b> ในรายงานและ Explore จนกว่าจะลงทะเบียนเป็น Custom dimension</p>
+    <ol class="steps ga">
+      <li><span class="path"><b>Admin</b><i>›</i><b>Data display</b><i>›</i><b>Custom definitions</b></span> → <span class="ui">Create custom dimension</span></li>
+      <li>Dimension name: <code>Card type</code> · Scope: <b>Event</b> · Event parameter: <code>card_type</code> → Save</li>
+      <li>ทำซ้ำกับ <code>button_location</code> และ <code>income_range</code></li>
+    </ol>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 16 · หน้าจอจำลอง: New custom dimension</div>
+      <div class="mock" style="max-width:520px;margin:0 auto">
+        <div class="mock-top">New custom dimension<span class="sp"><span class="m-btn">Save</span></span></div>
+        <div class="mock-main">
+          <div class="m-field"><span class="m-label">Dimension name</span><span class="m-input">Card type</span></div>
+          <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Scope</span><span class="m-input">Event ▾</span><span class="pin pin-abs">1</span></div>
+          <div class="m-field"><span class="m-label">Description</span><span class="m-input muted">ประเภทบัตรที่ผู้ใช้เลือก</span></div>
+          <div class="m-field hl" style="padding:6px;position:relative"><span class="m-label">Event parameter</span><span class="m-input mono">card_type</span><span class="pin pin-abs">2</span></div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>Scope = Event เพราะค่านี้ติดมากับ event แต่ละครั้ง</li>
+        <li><span class="pin">2</span>สะกดให้ตรงกับชื่อ parameter ใน GTM ทุกตัวอักษร</li>
+      </ul>
+    </figure>
+    <div class="callout warn"><span class="ci">⏳</span><div><span class="t">ไม่ย้อนหลัง!</span>custom dimension เริ่มเก็บตั้งแต่ตอนที่สร้างเท่านั้น และใช้เวลาราว 24–48 ชม. กว่าจะเห็นในรายงาน ควรสร้างทันทีที่ Tracking plan เสร็จ อย่ารอจนหัวหน้ามาถาม</div></div>
+
+    <div class="mission">
+      <h4>🛠️ ภารกิจวันที่ 4</h4>
+      <label><input type="checkbox" data-id="d4-1"><span>ทวน Tracking plan ของหน้าเว็บฝึก แล้วเปิดดูโค้ด <code>dataLayer.push</code> ใน practice-page.html</span></label>
+      <label><input type="checkbox" data-id="d4-2"><span>วัด <code>benefits_click</code> ด้วย Click trigger (Click ID)</span></label>
+      <label><input type="checkbox" data-id="d4-3"><span>สร้าง Variable 3 ตัว (DLV) + Trigger + Tag ของ <code>apply_click</code></span></label>
+      <label><input type="checkbox" data-id="d4-4"><span>สร้าง Trigger + Tag ของ <code>generate_lead</code></span></label>
+      <label><input type="checkbox" data-id="d4-5"><span>ทดสอบใน Preview + DebugView แล้ว Publish เวอร์ชัน 2</span></label>
+      <label><input type="checkbox" data-id="d4-6"><span>ตั้ง <code>generate_lead</code> เป็น Key event</span></label>
+      <label><input type="checkbox" data-id="d4-7"><span>สร้าง Custom dimension: Card type, Button location, Income range</span></label>
+      <label><input type="checkbox" data-id="d4-8"><span>(โบนัส) วัด <code>apply_form_start</code> ด้วยตัวเองโดยไม่ดูวิธี</span></label>
+    </div>
+    <div class="quiz" data-quiz="day4"></div>
+    <div class="done-row"><p>เห็น <code>apply_click</code> พร้อม <code>card_type</code> ใน DebugView แล้ว? ผ่าน!</p><button class="done-btn" type="button" data-done="4" aria-pressed="false">✓ เรียนจบวันที่ 4</button></div>
+  </section>
+
+  <!-- ============================== DAY 5 ============================== -->
+  <section class="block day" id="day5" data-day="5">
+    <div class="day-head">
+      <span class="day-badge">วันที่ 5</span>
+      <h2>อ่านรายงานให้เป็น + ลิงก์ UTM</h2>
+      <div class="day-meta">⏱ ~75 นาที · ฝึกกับ Demo Account เป็นหลัก</div>
+      <div class="goals">
+        <h4>จบวันนี้คุณจะ…</h4>
+        <ul>
+          <li>รู้ว่าคำถามแบบไหนต้องไปดูรายงานไหน</li>
+          <li>อ่านตาราง Traffic acquisition และเปลี่ยน dimension ได้</li>
+          <li>สร้าง Funnel exploration เพื่อหาว่าคนหลุดตรงไหน</li>
+          <li>สร้างลิงก์ UTM สำหรับแคมเปญได้ถูกหลัก</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout tip"><span class="ci">⏰</span><div><span class="t">ข้อมูลในรายงานมาช้ากว่า Realtime</span>รายงานมาตรฐานใช้เวลาประมาณ 24–48 ชม. กว่าข้อมูลจะเข้าครบ และ property ฝึกของเรายังมีข้อมูลน้อย วันนี้จึงแนะนำให้ฝึกอ่านรายงานกับ <b>Demo Account</b> (วันที่ 1) ซึ่งมีข้อมูลจริงจำนวนมาก</div></div>
+
+    <h3 class="sub"><span class="no">5.1</span>แผนที่เมนู GA4</h3>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 17 · เมนูด้านซ้ายของ GA4</div>
+      <div class="mock">
+        <div class="mock-top"><span class="logo-ga"></span>Analytics · DemoCard Website<span class="sp"><span class="m-input" style="font-size:12px;min-width:150px">🔍 Search…</span><span class="pin">6</span></span></div>
+        <div class="mock-app" style="min-height:250px">
+          <div class="mock-nav">
+            <div>🏠 Home <span class="pin">1</span></div>
+            <div class="on">📊 Reports <span class="pin">2</span></div>
+            <div>🔎 Explore <span class="pin">3</span></div>
+            <div>📣 Advertising <span class="pin">4</span></div>
+            <div style="margin-top:70px">⚙️ Admin <span class="pin">5</span></div>
+          </div>
+          <div class="mock-main">
+            <span class="m-label">REPORTS</span>
+            <div class="m-row"><span>Reports snapshot</span></div>
+            <div class="m-row"><span>Realtime overview</span></div>
+            <div class="m-row"><b>Life cycle</b></div>
+            <div class="m-row" style="padding-left:14px"><span>› Acquisition · Engagement · Retention</span></div>
+            <div class="m-row"><b>User</b></div>
+            <div class="m-row" style="padding-left:14px"><span>› User attributes · Tech</span></div>
+            <div class="m-row"><small class="muted">+ กลุ่มรายงานตาม Business objective ที่เลือก เช่น Generate leads</small></div>
+          </div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span><b>Home</b> ภาพรวมและทางลัดไปหน้าที่เปิดบ่อย</li>
+        <li><span class="pin">2</span><b>Reports</b> รายงานสำเร็จรูป ใช้บ่อยที่สุด</li>
+        <li><span class="pin">3</span><b>Explore</b> สร้างรายงานเอง เช่น Funnel, Path, Free form</li>
+        <li><span class="pin">4</span><b>Advertising</b> เรื่อง attribution และการเชื่อมกับ Google Ads</li>
+        <li><span class="pin">5</span><b>Admin</b> การตั้งค่าทั้งหมด (สิ่งที่ทำในวันที่ 2–4)</li>
+        <li><span class="pin">6</span><b>Search</b> หาเมนูไม่เจอ พิมพ์ชื่อรายงานได้เลย เช่น “traffic acquisition”</li>
+      </ul>
+    </figure>
+    <p class="muted" style="font-size:15px">รายชื่อเมนูใน Reports ของแต่ละ property ไม่เหมือนกัน เพราะขึ้นอยู่กับ Business objective ที่เลือกตอนสร้าง ถ้าหาไม่เจอให้ใช้ช่อง Search ด้านบน</p>
+
+    <h3 class="sub"><span class="no">5.2</span>คำถามจากหัวหน้า → ไปดูรายงานไหน</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>คำถาม</th><th>ไปที่</th><th>ดูอะไร</th></tr></thead>
+      <tbody>
+        <tr><td>“แคมเปญเพิ่งเริ่มยิง คนเข้ามาหรือยัง?”</td><td>Realtime overview</td><td>Active users, event ที่เกิดขึ้น</td></tr>
+        <tr><td>“คนมาจากช่องทางไหน ช่องทางไหนพาคนสมัครได้มากที่สุด?”</td><td>Acquisition › Traffic acquisition</td><td>Session default channel group + คอลัมน์ Key events</td></tr>
+        <tr><td>“หน้าไหนมีคนดูเยอะ?”</td><td>Engagement › Pages and screens</td><td>Views, Average engagement time</td></tr>
+        <tr><td>“landing page ของแคมเปญทำงานดีไหม?”</td><td>Engagement › Landing page</td><td>Sessions, Key events ของหน้าแรกที่คนเข้า</td></tr>
+        <tr><td>“ปุ่มสมัครถูกกดกี่ครั้ง?”</td><td>Engagement › Events</td><td>Event count ของ <code>apply_click</code></td></tr>
+        <tr><td>“ลูกค้าใช้มือถือหรือคอมพิวเตอร์?”</td><td>User › Tech › Tech details</td><td>Device category</td></tr>
+        <tr><td>“คนหลุดตรงขั้นไหนของการสมัคร?”</td><td>Explore › Funnel exploration</td><td>% ที่หลุดในแต่ละขั้น</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="sub"><span class="no">5.3</span>อ่านรายงาน Traffic acquisition</h3>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 18 · หน้าจอจำลอง: Traffic acquisition (ตัวเลขสมมติ)</div>
+      <div class="mock">
+        <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Reports › Acquisition › Traffic acquisition</span></div>
+        <div class="mock-main">
+          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <b>Traffic acquisition: Session default channel group</b>
+            <span class="m-input hl" style="font-size:12px;position:relative">📅 Last 28 days ▾<span class="pin pin-abs">1</span></span>
+          </div>
+          <div class="scroll-x">
+          <table class="m-tbl">
+            <thead><tr><th><span class="hl" style="padding:2px 6px;position:relative">Session default channel group ▾<span class="pin pin-abs">2</span></span></th><th>Sessions</th><th>Engaged sessions</th><th>Engagement rate</th><th><span class="hl" style="padding:2px 6px;position:relative">Key events ▾<span class="pin pin-abs">3</span></span></th><th>Session key event rate</th></tr></thead>
+            <tbody>
+              <tr><td>Paid Social</td><td>5,820</td><td>2,560</td><td>44.0%</td><td>96</td><td>1.6%</td></tr>
+              <tr><td>Organic Search</td><td>3,410</td><td>2,250</td><td>66.0%</td><td>118</td><td>3.4%</td></tr>
+              <tr><td>Paid Search</td><td>2,105</td><td>1,410</td><td>67.0%</td><td>131</td><td>6.1%</td></tr>
+              <tr><td>Direct</td><td>1,640</td><td>980</td><td>59.8%</td><td>52</td><td>3.1%</td></tr>
+              <tr><td>Email</td><td>420</td><td>310</td><td>73.8%</td><td>27</td><td>6.4%</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <ul class="mock-caption">
+        <li><span class="pin">1</span>เปลี่ยนช่วงวันที่ และกด Compare เพื่อเทียบกับช่วงก่อนหน้าได้</li>
+        <li><span class="pin">2</span>เปลี่ยน dimension เป็น <b>Session source / medium</b> หรือ <b>Session campaign</b> เพื่อดูละเอียดลงไป</li>
+        <li><span class="pin">3</span>เลือกให้นับเฉพาะ <code>generate_lead</code> แทนการนับ key event ทุกตัวรวมกัน</li>
+      </ul>
+    </figure>
+    <div class="callout talk"><span class="ci">💬</span><div><span class="t">ลองอ่านเป็น insight</span>“Paid Social พาคนมาเยอะที่สุด แต่สมัครแค่ 1.6% ของ session ขณะที่ Paid Search คนมาน้อยกว่าเกือบ 3 เท่า แต่อัตราสมัครสูงถึง 6.1% ควรดูว่าโฆษณา social ส่งคนไปถูก landing page หรือยัง หรือเลือกกลุ่มเป้าหมายกว้างเกินไปหรือเปล่า”<br><small>ดูแค่จำนวนอย่างเดียวไม่พอ ต้องดู <b>อัตรา</b> ด้วยเสมอ</small></div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Channel</th><th>หมายถึง</th></tr></thead>
+      <tbody>
+        <tr><td>Organic Search</td><td>มาจาก Google หรือ search engine แบบไม่ได้จ่ายเงิน</td></tr>
+        <tr><td>Paid Search</td><td>มาจากโฆษณาบน Google Search</td></tr>
+        <tr><td>Paid Social / Organic Social</td><td>มาจากโฆษณา / โพสต์ปกติ บน Facebook, Instagram, TikTok ฯลฯ</td></tr>
+        <tr><td>Direct</td><td>พิมพ์ URL เอง, กดจากบุ๊กมาร์ก หรือ <b>ไม่รู้ที่มา</b> (เช่น ลิงก์ในแอปแชตที่ไม่ได้ติด UTM)</td></tr>
+        <tr><td>Referral</td><td>คลิกลิงก์มาจากเว็บอื่น</td></tr>
+        <tr><td>Email</td><td>มาจากอีเมล (ต้องติด UTM ถึงจะแยกออกมาได้)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="sub"><span class="no">5.4</span>Funnel exploration: หาว่าคนหลุดตรงไหน</h3>
+    <ol class="steps ga">
+      <li>ไปที่ <b>Explore</b> → เลือกเทมเพลต <span class="ui">Funnel exploration</span></li>
+      <li>ในคอลัมน์ Settings กดดินสอ ✏️ ที่ <b>Steps</b></li>
+      <li>Step 1 “เข้าเว็บ” = event <code>page_view</code> · Step 2 “กดสมัคร” = <code>apply_click</code> · Step 3 “ส่งใบสมัคร” = <code>generate_lead</code> → <span class="ui">Apply</span></li>
+      <li>ลองลาก <b>Device category</b> ไปใส่ช่อง Breakdown เพื่อเทียบมือถือกับคอมพิวเตอร์</li>
+    </ol>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 19 · ผลลัพธ์ Funnel (ตัวเลขสมมติ)</div>
+      <div class="funnel">
+        <div class="f-row"><div class="f-label"><b>1. เข้าเว็บ</b><br><code>page_view</code></div><div class="f-track"><div class="f-bar" style="--w:100%">1,000 คน · 100%</div></div></div>
+        <div class="f-drop">↘ หลุด 620 คน (62%)</div>
+        <div class="f-row"><div class="f-label"><b>2. กดสมัคร</b><br><code>apply_click</code></div><div class="f-track"><div class="f-bar" style="--w:38%">380 คน · 38%</div></div></div>
+        <div class="f-drop">↘ หลุด 288 คน (76% ของคนที่กดสมัคร) ← จุดที่หนักที่สุด</div>
+        <div class="f-row"><div class="f-label"><b>3. ส่งใบสมัคร</b><br><code>generate_lead</code></div><div class="f-track"><div class="f-bar" style="--w:9.2%">92 คน · 9.2%</div></div></div>
+      </div>
+      <figcaption>insight: คนกดสมัคร 380 คน แต่ส่งสำเร็จแค่ 92 คน ปัญหาน่าจะอยู่ที่ <b>ฟอร์ม</b> (ยาวไป? ขอเอกสารเยอะ? ใช้บนมือถือยาก?) ข้อเสนอ: ลองตัดช่องที่ไม่จำเป็น แล้ววัดผลซ้ำ</figcaption>
+    </figure>
+    <div class="callout tip"><span class="ci">🧪</span><div><span class="t">ฝึกกับ Demo Account</span>ร้านใน Demo Account เป็นร้านขายของ เลยไม่มี <code>apply_click</code> ให้ใช้ ลองทำ funnel <code>session_start</code> → <code>view_item</code> → <code>add_to_cart</code> → <code>begin_checkout</code> → <code>purchase</code> แทน แล้วหาว่าขั้นไหนคนหลุดมากที่สุด</div></div>
+
+    <h3 class="sub"><span class="no">5.5</span>UTM: ติดป้ายบอกที่มาให้ลิงก์</h3>
+    <p>เวลาแชร์ลิงก์ใน LINE OA, SMS หรืออีเมล GA4 มักแยกไม่ออกว่าคนมาจากไหน แล้วไปรวมอยู่ใน “Direct” ทำให้ทีมการตลาดวัดผลแคมเปญไม่ได้ วิธีแก้คือเติม <b>UTM parameters</b> ต่อท้ายลิงก์</p>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 20 · กายวิภาคของลิงก์ UTM</div>
+      <div class="url-anatomy"><span class="u-base">https://democard-practice.com/?</span><span class="u-src">utm_source=facebook</span>&amp;<span class="u-med">utm_medium=paid_social</span>&amp;<span class="u-cam">utm_campaign=cashback_nov2026</span>&amp;<span class="u-con">utm_content=video_a</span></div>
+      <div class="tbl-wrap" style="margin-bottom:0"><table class="tbl">
+        <thead><tr><th>Parameter</th><th>ตอบคำถาม</th><th>ตัวอย่างค่า</th></tr></thead>
+        <tbody>
+          <tr><td><span class="u-src" style="padding:0 6px;border-radius:5px">utm_source</span> <small class="muted">จำเป็น</small></td><td>ใคร / ที่ไหนส่งคนมา</td><td><code>facebook</code>, <code>google</code>, <code>line</code>, <code>newsletter</code></td></tr>
+          <tr><td><span class="u-med" style="padding:0 6px;border-radius:5px">utm_medium</span> <small class="muted">จำเป็น</small></td><td>ช่องทางประเภทไหน</td><td><code>cpc</code>, <code>paid_social</code>, <code>email</code>, <code>sms</code></td></tr>
+          <tr><td><span class="u-cam" style="padding:0 6px;border-radius:5px">utm_campaign</span> <small class="muted">จำเป็น</small></td><td>แคมเปญชื่ออะไร</td><td><code>cashback_nov2026</code></td></tr>
+          <tr><td><span class="u-con" style="padding:0 6px;border-radius:5px">utm_content</span></td><td>ชิ้นโฆษณาไหน (ใช้ทำ A/B)</td><td><code>video_a</code>, <code>banner_b</code></td></tr>
+          <tr><td>utm_term</td><td>keyword ที่ค้นหา (ใช้กับโฆษณา search)</td><td><code>บัตรเครดิตเงินคืน</code></td></tr>
+        </tbody>
+      </table></div>
+    </figure>
+    <div class="two">
+      <div class="listcard yes"><h4>✅ ควรทำ</h4><ul>
+        <li>ใช้ตัวพิมพ์เล็กทั้งหมด และใช้ <code>_</code> แทนช่องว่าง</li>
+        <li>ตกลงรูปแบบชื่อกับทีมไว้เป็นตาราง (UTM naming convention)</li>
+        <li>ใช้ <a href="https://ga-dev-tools.google/campaign-url-builder/" target="_blank" rel="noopener">Campaign URL Builder</a> ช่วยสร้าง จะได้ไม่พิมพ์ผิด</li>
+      </ul></div>
+      <div class="listcard no"><h4>❌ ห้ามทำ</h4><ul>
+        <li>ปนตัวพิมพ์เล็ก-ใหญ่ เพราะ <code>Facebook</code> กับ <code>facebook</code> จะกลายเป็นคนละแถว</li>
+        <li>ใส่ UTM ในลิงก์ภายในเว็บตัวเอง (เช่น แบนเนอร์หน้าแรก) จะทำให้ที่มาจริงของ session ถูกเขียนทับ</li>
+        <li>ใส่ข้อมูลส่วนตัวลงใน UTM</li>
+      </ul></div>
+    </div>
+    <p style="margin-top:14px"><b>ดูผลได้ที่ไหน:</b> Traffic acquisition → เปลี่ยน dimension เป็น <b>Session source / medium</b> หรือ <b>Session campaign</b> · ถ้าอยากเห็นทันที ให้เปิดลิงก์ UTM ใน <b>หน้าต่าง Incognito</b> (GA4 จะนับเป็นผู้ใช้ใหม่) แล้วดูการ์ด <b>First user source</b> ใน Realtime</p>
+
+    <div class="mission">
+      <h4>🛠️ ภารกิจวันที่ 5</h4>
+      <label><input type="checkbox" data-id="d5-1"><span>Demo Account: หาว่าช่องทางไหนมี Sessions มากที่สุดใน 28 วันล่าสุด และช่องทางไหนมี engagement rate สูงที่สุด</span></label>
+      <label><input type="checkbox" data-id="d5-2"><span>Demo Account: เปิด Pages and screens แล้วดูว่าหน้าไหนมี Views สูงสุด</span></label>
+      <label><input type="checkbox" data-id="d5-3"><span>Demo Account: สร้าง Funnel exploration แบบร้านค้า แล้วหาขั้นที่คนหลุดมากที่สุด</span></label>
+      <label><input type="checkbox" data-id="d5-4"><span>สร้างลิงก์ UTM ของหน้าเว็บฝึกด้วย Campaign URL Builder แล้วเปิดใน Incognito → ดูใน Realtime</span></label>
+      <label><input type="checkbox" data-id="d5-5"><span>เขียน insight 1 ประโยคจากรายงานใดก็ได้ ในรูปแบบ “เห็นอะไร → แปลว่าอะไร → ควรทำอะไร”</span></label>
+    </div>
+    <div class="quiz" data-quiz="day5"></div>
+    <div class="done-row"><p>เขียน insight ได้แล้ว = อ่านรายงานเป็นแล้ว</p><button class="done-btn" type="button" data-done="5" aria-pressed="false">✓ เรียนจบวันที่ 5</button></div>
+  </section>
+
+  <!-- ============================== DAY 6 ============================== -->
+  <section class="block day" id="day6" data-day="6">
+    <div class="day-head">
+      <span class="day-badge">วันที่ 6</span>
+      <h2>เรื่องที่บริษัทการเงินซีเรียส: ข้อมูลส่วนตัว, PDPA และ Consent</h2>
+      <div class="day-meta">⏱ ~60 นาที · ทำให้คุณดูต่างจากผู้สมัครคนอื่น</div>
+      <div class="goals">
+        <h4>จบวันนี้คุณจะ…</h4>
+        <ul>
+          <li>รู้ว่าข้อมูลแบบไหนห้ามส่งเข้า GA4 และข้อมูลรั่วออกไปทางไหนได้บ้างโดยไม่ตั้งใจ</li>
+          <li>เข้าใจว่า cookie banner เกี่ยวกับ PDPA ยังไง</li>
+          <li>รู้จัก Consent Mode v2 และได้ลองใช้บนหน้าเว็บฝึก</li>
+          <li>มี checklist ตั้งค่า property แบบมืออาชีพ</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout talk"><span class="ci">🏦</span><div><span class="t">ทำไมต้องรู้เรื่องนี้</span>ธุรกิจบัตรเครดิตและสินเชื่ออยู่ภายใต้การกำกับดูแลที่เข้มงวด และต้องดูแลข้อมูลลูกค้าเป็นพิเศษ ถ้าข้อมูลลูกค้ารั่วผ่าน tracking จะเป็นเรื่องใหญ่ คนที่พูดเรื่องนี้ได้เองในสัมภาษณ์จะดูน่าไว้ใจทันที</div></div>
+
+    <h3 class="sub"><span class="no">6.1</span>PII: ข้อมูลที่ห้ามส่งเข้า GA4 เด็ดขาด</h3>
+    <p><b>PII</b> (Personally Identifiable Information) คือข้อมูลที่ระบุตัวคนได้ <b>นโยบายของ Google ห้ามส่ง PII เข้า Google Analytics</b> ถ้าส่งเข้าไปแล้ว อาจต้องลบข้อมูลทิ้งทั้งชุด และยังเสี่ยงผิดกฎหมายคุ้มครองข้อมูลด้วย</p>
+    <div class="two">
+      <div class="listcard no"><h4>❌ ห้ามส่ง</h4><ul>
+        <li>ชื่อ-นามสกุล</li><li>เบอร์โทรศัพท์</li><li>อีเมล</li><li>เลขบัตรประชาชน</li><li>เลขบัตรเครดิต / เลขบัญชี</li><li>ที่อยู่</li>
+      </ul></div>
+      <div class="listcard yes"><h4>✅ ส่งได้</h4><ul>
+        <li>ประเภทบัตรที่เลือก (<code>cashback</code>)</li><li>ช่วงรายได้ (<code>30k_50k</code>) ไม่ใช่ตัวเลขจริง</li><li>ขั้นตอนที่ทำถึง (<code>step_2</code>)</li><li>ตำแหน่งปุ่ม (<code>hero</code>)</li><li>ผลลัพธ์ (<code>success</code> / <code>error</code>)</li>
+      </ul></div>
+    </div>
+    <h4 class="mini">⚠️ ทางรั่วที่คนไม่ทันระวัง: URL</h4>
+    <p>GA4 เก็บ URL ของทุกหน้าไว้ใน <code>page_location</code> โดยอัตโนมัติ ถ้าฟอร์มส่งข้อมูลด้วย <code>method="GET"</code> หรือ dev เขียนโค้ดให้ redirect พร้อมข้อมูลติด URL ไปด้วย PII จะรั่วเข้า GA4 ทันทีโดยไม่มีใครตั้งใจ</p>
+    <div class="codebox bad"><div class="cb-head"><span>❌ URL หน้าขอบคุณแบบนี้ = ข้อมูลรั่ว</span><button class="copy" type="button">คัดลอก</button></div><pre><code>https://democard.co.th/thank-you?<span class="x">name=somchai&amp;phone=0812345678&amp;email=somchai@mail.com</span></code></pre></div>
+    <ul>
+      <li><b>วิธีป้องกัน:</b> ฟอร์มใช้ <code>POST</code>, ห้ามใส่ข้อมูลส่วนตัวใน URL, ห้ามใส่ชื่อลูกค้าในชื่อหน้า (<code>&lt;title&gt;สวัสดีคุณสมชาย&lt;/title&gt;</code>) และ review ทุก <code>dataLayer.push</code> ก่อนขึ้นจริง</li>
+      <li><b>วิธีตรวจ:</b> Explore → Free form → ใส่ dimension <b>Page location</b> แล้วค้นหาคำว่า <code>@</code>, <code>phone=</code>, <code>email=</code></li>
+    </ul>
+
+    <h3 class="sub"><span class="no">6.2</span>PDPA กับ Cookie banner</h3>
+    <p><b>PDPA</b> (พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562) บังคับใช้เต็มรูปแบบตั้งแต่ 1 มิ.ย. 2565 GA4 ใช้คุกกี้ (เช่น <code>_ga</code>) เพื่อจำว่าเบราว์เซอร์นี้เคยมาแล้ว เว็บองค์กรในไทยส่วนใหญ่จึงขึ้น <b>แบนเนอร์ขอความยินยอม</b> ก่อนเปิดคุกกี้วิเคราะห์และคุกกี้การตลาด</p>
+    <div class="tbl-wrap"><table class="tbl plain">
+      <thead><tr><th>ใครทำอะไร</th><th>หน้าที่</th></tr></thead>
+      <tbody>
+        <tr><td><b>ฝ่ายกฎหมาย / DPO</b></td><td>ตัดสินว่าต้องขอความยินยอมเรื่องอะไรบ้าง และข้อความบนแบนเนอร์ต้องเขียนว่าอะไร</td></tr>
+        <tr><td><b>Web master / Frontend</b></td><td>ติดตั้งแบนเนอร์ (บริษัทใหญ่มักใช้ CMP หรือ Consent Management Platform สำเร็จรูป เช่น OneTrust) และทำให้ tag ทุกตัวทำงานตามที่ผู้ใช้เลือกจริง</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted" style="font-size:14.5px">หมายเหตุ: ส่วนนี้อธิบายเพื่อความเข้าใจในงาน ไม่ใช่คำแนะนำทางกฎหมาย นโยบายจริงขึ้นอยู่กับแต่ละบริษัท</p>
+
+    <h3 class="sub"><span class="no">6.3</span>Consent Mode v2: ให้ tag ฟังคำตอบจากแบนเนอร์</h3>
+    <p>Consent Mode คือวิธีที่ Google tag ใช้รู้ว่าผู้ใช้อนุญาตอะไรไว้บ้าง ผ่านสถานะ 4 ตัว</p>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>สถานะ</th><th>ควบคุมอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><code>analytics_storage</code></td><td>คุกกี้สำหรับวิเคราะห์ (GA4)</td></tr>
+        <tr><td><code>ad_storage</code></td><td>คุกกี้สำหรับโฆษณา</td></tr>
+        <tr><td><code>ad_user_data</code></td><td>อนุญาตให้ส่งข้อมูลผู้ใช้ไป Google เพื่อใช้ทำโฆษณา</td></tr>
+        <tr><td><code>ad_personalization</code></td><td>อนุญาตให้ทำโฆษณาเฉพาะบุคคล (remarketing)</td></tr>
+      </tbody>
+    </table></div>
+    <figure class="fig">
+      <div class="fig-title">ภาพที่ 21 · ลำดับการทำงานของ Consent Mode</div>
+      <div class="flow">
+        <div class="flow-step bad"><span class="n">1</span><div class="ico">🚫</div><b>โหลดหน้า</b><small>ตั้งค่าเริ่มต้น (default) ทุกตัว = <code>denied</code></small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><span class="n">2</span><div class="ico">🍪</div><b>แสดงแบนเนอร์</b><small>ผู้ใช้เลือก ยอมรับ / ปฏิเสธ</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step ok"><span class="n">3</span><div class="ico">✅</div><b>ยอมรับ → update</b><small>เปลี่ยนเป็น <code>granted</code> GA4 ใช้คุกกี้ได้ตามปกติ</small></div>
+        <div class="flow-arrow">/</div>
+        <div class="flow-step vi"><span class="n">3</span><div class="ico">🙅</div><b>ปฏิเสธ</b><small>คงเป็น <code>denied</code> GA4 ไม่เขียนคุกกี้</small></div>
+      </div>
+    </figure>
+    <div class="codebox"><div class="cb-head"><span>JavaScript · ต้องรันก่อนโค้ด GTM (practice-page.html มีให้แล้ว)</span><button class="copy" type="button">คัดลอก</button></div><pre><code>window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+
+<span class="c">// 1) ค่าเริ่มต้น: ยังไม่อนุญาตอะไรเลย</span>
+gtag(<span class="s">'consent'</span>, <span class="s">'default'</span>, {
+  analytics_storage: <span class="s">'denied'</span>,
+  ad_storage: <span class="s">'denied'</span>,
+  ad_user_data: <span class="s">'denied'</span>,
+  ad_personalization: <span class="s">'denied'</span>,
+  wait_for_update: 500
+});
+
+<span class="c">// 2) เมื่อผู้ใช้กด “ยอมรับ” บนแบนเนอร์</span>
+gtag(<span class="s">'consent'</span>, <span class="s">'update'</span>, {
+  analytics_storage: <span class="s">'granted'</span>,
+  ad_storage: <span class="s">'granted'</span>,
+  ad_user_data: <span class="s">'granted'</span>,
+  ad_personalization: <span class="s">'granted'</span>
+});</code></pre></div>
+    <div class="tbl-wrap"><table class="tbl plain">
+      <thead><tr><th>แบบ</th><th>ทำงานยังไง</th></tr></thead>
+      <tbody>
+        <tr><td><b>Basic</b></td><td>ไม่โหลด Google tag เลยจนกว่าผู้ใช้จะกดยอมรับ</td></tr>
+        <tr><td><b>Advanced</b></td><td>โหลด tag ไว้ก่อน ถ้ายังไม่ยินยอมจะส่งสัญญาณแบบไม่มีคุกกี้ (cookieless pings) แทน แล้ว Google ใช้สัญญาณนี้ประมาณการข้อมูลส่วนที่ขาดไป</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted" style="font-size:15px">แต่ละบริษัทเลือกแบบตามนโยบายของตัวเอง ในสัมภาษณ์แค่อธิบายได้ว่าสองแบบต่างกันยังไงก็พอ</p>
+    <ol class="steps">
+      <li><b>ลองบนหน้าเว็บฝึก:</b> เปิด practice-page.html หาบรรทัด <code>var USE_CONSENT_MODE = false;</code> แล้วเปลี่ยนเป็น <code>true</code> → Save</li>
+      <li>รีเฟรชหน้า จะมีแบนเนอร์คุกกี้ขึ้นมา (ยังไม่ต้องกด)</li>
+      <li>เปิด GTM Preview → ใน Tag Assistant คลิกเหตุการณ์ <b>Consent Initialization</b> → แท็บ <b>Consent</b> จะเห็นว่าทุกตัวเป็น <b>Denied</b></li>
+      <li>กด “ยอมรับทั้งหมด” บนหน้าเว็บ แล้วดูแท็บ Consent อีกครั้ง ค่า <b>On-page Update</b> จะเปลี่ยนเป็น <b>Granted</b></li>
+      <li>ลองกด “ตั้งค่าคุกกี้ใหม่” ที่ท้ายหน้าเว็บ แล้วเลือก “ปฏิเสธ” เพื่อเปรียบเทียบ จบแล้วเปลี่ยนกลับเป็น <code>false</code> ถ้าอยากเก็บข้อมูลง่ายๆ ต่อ</li>
+    </ol>
+
+    <h3 class="sub"><span class="no">6.4</span>Checklist ตั้งค่า property แบบมืออาชีพ</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>เรื่อง</th><th>ทำไม</th><th>ไปที่</th></tr></thead>
+      <tbody>
+        <tr><td>Data retention 14 เดือน</td><td>ดูข้อมูลใน Explore ย้อนหลังได้นานขึ้น (ทำไปแล้วในวันที่ 2)</td><td>Admin › Data collection and modification › Data retention</td></tr>
+        <tr><td>กรอง traffic ภายใน</td><td>ไม่ให้พนักงานที่เปิดเว็บทั้งวันทำให้ตัวเลขเพี้ยน</td><td>Admin › Data streams › (stream) › Configure tag settings › Show more › <b>Define internal traffic</b> (ใส่ IP ออฟฟิศ) แล้วไปเปิด filter ที่ Admin › Data collection and modification › <b>Data filters</b> (ทดสอบในโหมด Testing ก่อนเปลี่ยนเป็น Active)</td></tr>
+        <tr><td>Unwanted referrals</td><td>ถ้าขั้นตอนสมัครเด้งไปเว็บยืนยันตัวตนหรือ payment แล้วกลับมา GA4 จะนับว่าคนมาจากเว็บนั้น ทำให้ที่มาจริงหาย</td><td>Configure tag settings › <b>List unwanted referrals</b></td></tr>
+        <tr><td>Cross-domain</td><td>ถ้าหน้าเว็บหลักกับหน้าสมัครอยู่คนละโดเมน (ไม่ใช่แค่คนละ subdomain) ต้องตั้งค่า ไม่อย่างนั้นคนเดียวจะถูกนับเป็น 2 คน</td><td>Configure tag settings › <b>Configure your domains</b></td></tr>
+        <tr><td>สิทธิ์ผู้ใช้</td><td>ให้สิทธิ์เท่าที่จำเป็น (Viewer / Analyst / Marketer / Editor / Administrator)</td><td>Admin › Property access management</td></tr>
+        <tr><td>เชื่อมเครื่องมืออื่น</td><td>Google Ads (วัดผลโฆษณา), Search Console (คำค้นหา), BigQuery (ส่งข้อมูลดิบไปวิเคราะห์ต่อ)</td><td>Admin › Product links</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout tip"><span class="ci">📈</span><div><span class="t">คำที่ควรรู้จักไว้ (ไม่ต้องทำเป็นก็ได้)</span><b>Looker Studio</b> เครื่องมือฟรีของ Google ใช้ทำ dashboard จากข้อมูล GA4 ให้ผู้บริหารดู · <b>BigQuery</b> ฐานข้อมูลที่รับข้อมูลดิบจาก GA4 ทีม data มักใช้วิเคราะห์ลึกๆ · <b>Server-side GTM</b> GTM ที่รันบนเซิร์ฟเวอร์ของบริษัทเอง ช่วยควบคุมข้อมูลได้มากขึ้น (ระดับสูง)</div></div>
+
+    <div class="mission">
+      <h4>🛠️ ภารกิจวันที่ 6</h4>
+      <label><input type="checkbox" data-id="d6-1"><span>เปิดกล่อง dataLayer บนหน้าเว็บฝึก ส่งฟอร์มแล้วยืนยันว่าไม่มีชื่อหรือเบอร์โทรหลุดออกไป</span></label>
+      <label><input type="checkbox" data-id="d6-2"><span>เปิด <code>USE_CONSENT_MODE = true</code> แล้วดูสถานะ Denied → Granted ใน Tag Assistant แท็บ Consent</span></label>
+      <label><input type="checkbox" data-id="d6-3"><span>ลองตั้ง Define internal traffic ด้วย IP ของตัวเอง (ค้นใน Google ว่า “what is my ip”) แล้วเปิด Data filter ในโหมด Testing</span></label>
+      <label><input type="checkbox" data-id="d6-4"><span>อ่าน checklist 6.4 จนอธิบายได้ว่าแต่ละข้อมีไว้ทำไม</span></label>
+    </div>
+    <div class="quiz" data-quiz="day6"></div>
+    <div class="done-row"><p>เรื่องนี้คือจุดขายของคุณในวันสัมภาษณ์</p><button class="done-btn" type="button" data-done="6" aria-pressed="false">✓ เรียนจบวันที่ 6</button></div>
+  </section>
+
+  <!-- ============================== DAY 7 ============================== -->
+  <section class="block day" id="day7" data-day="7">
+    <div class="day-head">
+      <span class="day-badge">วันที่ 7</span>
+      <h2>ซ้อมสัมภาษณ์ + ทบทวน</h2>
+      <div class="day-meta">⏱ ~90 นาที · พูดออกเสียงจริง ได้ผลกว่าอ่านในใจ</div>
+      <div class="goals">
+        <h4>จบวันนี้คุณจะ…</h4>
+        <ul>
+          <li>เล่าประสบการณ์ GA4 ได้อย่างซื่อสัตย์และน่าเชื่อถือ</li>
+          <li>ตอบ 17 คำถามยอดฮิตได้ด้วยคำพูดของตัวเอง</li>
+          <li>มีคำถามดีๆ ไว้ถามกลับ และมีงานฝึกไว้โชว์</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub"><span class="no">7.1</span>เล่าประสบการณ์ยังไงให้ซื่อสัตย์และน่าเชื่อ</h3>
+    <p>อย่าอ้างว่าเคยดูแล GA4 ในงานจริงถ้ายังไม่เคย ผู้สัมภาษณ์ถามเจาะลงไปไม่กี่ข้อก็รู้แล้ว ให้เล่าเป็น <b>โปรเจกต์ที่ลงมือทำจริง</b> แทน ซึ่งน่าเชื่อถือกว่าและพิสูจน์ได้</p>
+    <div class="callout talk"><span class="ci">🎤</span><div><span class="t">แม่แบบคำตอบ (ปรับให้เป็นคำพูดของตัวเอง)</span>
+    “ยังไม่เคยดูแล GA4 ในงานประจำ แต่เตรียมตัวด้วยการทำโปรเจกต์จริง คือสร้าง property GA4 แล้วติดตั้งผ่าน GTM บนหน้าสมัครบัตรที่ทำขึ้นเอง วาง tracking plan, ใช้ dataLayer ส่ง event <code>apply_click</code> กับ <code>generate_lead</code> พร้อม parameter ประเภทบัตร, ตั้ง generate_lead เป็น key event, ทดสอบด้วย Preview กับ DebugView และทำ funnel ดูว่าคนหลุดตรงไหน ระหว่างทำก็ระวังไม่ให้ข้อมูลส่วนตัวหลุดเข้า GA4 และลองใช้ Consent Mode ด้วย ส่วนงานที่ทำอยู่คือดูแลเว็บและทำ landing page ซึ่งเป็นจุดที่ติด tracking พวกนี้อยู่แล้ว เลยต่อยอดได้ทันที”</div></div>
+    <div class="callout tip"><span class="ci">📱</span><div><span class="t">เตรียม “หลักฐาน” ไว้ในมือถือ</span>แคปหน้าจอ 3 รูปเก็บไว้: (1) หน้า Tags ใน GTM ที่ตั้งชื่อเป็นระบบ (2) DebugView ที่เห็น <code>apply_click</code> พร้อม parameter (3) Funnel exploration ถ้า deploy หน้าเว็บฝึกขึ้น Netlify ไว้ด้วย จะเปิดโชว์ของจริงได้ทันที</div></div>
+
+    <h3 class="sub"><span class="no">7.2</span>17 คำถามยอดฮิต</h3>
+    <p class="muted">ลองตอบออกเสียงเองก่อน แล้วค่อยกดเปิดดูแนวคำตอบ</p>
+
+    <details class="qa"><summary><span class="qn">Q1</span>GA4 คืออะไร ต่างจาก Universal Analytics ยังไง</summary><div class="ans">
+      <p class="say">GA4 เป็นเครื่องมือวัดผลเว็บและแอปของ Google ที่ใช้โมเดลแบบ event คือทุกการกระทำเป็น event ที่มี parameter แนบมา ส่วน Universal Analytics รุ่นเก่านับแบบ pageview และ session และหยุดเก็บข้อมูลไปตั้งแต่กลางปี 2023 GA4 รวมเว็บกับแอปไว้ใน property เดียวได้ มีเมนู Explore สำหรับวิเคราะห์เชิงลึก และรองรับเรื่องความเป็นส่วนตัวอย่าง Consent Mode</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q2</span>Event กับ Parameter ต่างกันยังไง ยกตัวอย่าง</summary><div class="ans">
+      <p class="say">Event คือสิ่งที่เกิดขึ้น เช่น <code>apply_click</code> ส่วน Parameter คือรายละเอียดของสิ่งนั้น เช่น <code>card_type = cashback</code> และ <code>button_location = hero</code> ถ้าเป็น parameter ที่ตั้งเอง ต้องลงทะเบียนเป็น custom dimension ก่อนถึงจะใช้ในรายงานได้</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q3</span>Key event คืออะไร ตั้งยังไง</summary><div class="ans">
+      <p class="say">Key event คือ event ที่สำคัญต่อเป้าหมายธุรกิจ เช่น ส่งใบสมัครสำเร็จ เดิมเรียกว่า conversion ตั้งได้ที่ Admin › Data display › Key events โดยใส่ชื่อ event หรือกดดาวในรายการ Events พอตั้งแล้ว รายงานจะมีคอลัมน์ key events และ key event rate ให้ดูว่าช่องทางไหนพาคนมาทำเป้าหมายได้</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q4</span>ทำไมควรใช้ GTM แทนการฝังโค้ดลงเว็บตรงๆ</summary><div class="ans">
+      <p class="say">GTM รวม tag ทุกตัวไว้ที่เดียว ทั้ง GA4, Meta Pixel, Google Ads ทีมเพิ่มหรือแก้ tag ได้โดยไม่ต้องรอ deploy เว็บ มี Preview ให้ทดสอบก่อน มี version ย้อนกลับได้ และจัดการ consent ได้รวมศูนย์ แต่ต้องมีการควบคุม เช่น กำหนดว่าใครมีสิทธิ์ publish และตั้งชื่อให้เป็นระบบ</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q5</span>Tag, Trigger, Variable คืออะไร</summary><div class="ans">
+      <p class="say">ประโยคเดียวคือ “เมื่อ Trigger เกิดขึ้น ให้ทำ Tag โดยใช้ข้อมูลจาก Variable” เช่น เมื่อมี Custom Event <code>apply_click</code> (trigger) ให้ส่ง GA4 event (tag) พร้อม card_type ที่ดึงจาก Data Layer Variable (variable)</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q6</span>ถ้าได้โจทย์ “วัดว่ามีคนกดปุ่มสมัครบัตรกี่ครั้ง แยกตามประเภทบัตร” จะทำยังไง</summary><div class="ans">
+      <p class="say">1) ถามทีมก่อนว่าจะเอาข้อมูลไปตอบคำถามอะไร 2) เขียน tracking plan: event <code>apply_click</code>, parameter <code>card_type</code> และ <code>button_location</code> 3) ให้ frontend push dataLayer ตอนคลิก 4) ใน GTM สร้าง Data Layer Variable, Custom Event trigger และ GA4 Event tag 5) ทดสอบใน Preview และ DebugView 6) Publish พร้อมตั้งชื่อเวอร์ชัน 7) ลงทะเบียน card_type เป็น custom dimension 8) ทำรายงานหรือ exploration ให้ทีม</p>
+      <p class="muted" style="font-size:14.5px">คำถามนี้คือหัวใจของงาน ถ้าตอบได้เป็นขั้นตอนแบบนี้ จะดูมีประสบการณ์มาก</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q7</span>dataLayer คืออะไร ทำไมดีกว่าการจับคลิกจาก CSS class</summary><div class="ans">
+      <p class="say">dataLayer เป็น JavaScript array ที่เว็บใช้ส่งข้อมูลให้ GTM ข้อดีคือไม่พังเมื่อเปลี่ยนดีไซน์หรือข้อความบนปุ่ม ส่งข้อมูลธุรกิจที่หน้าจอไม่ได้แสดงได้ เช่น ประเภทบัตรที่เลือก และเหมาะกับเว็บ React หรือ Next.js ที่ DOM เปลี่ยนบ่อย ข้อเสียคือต้องให้ dev ช่วยเขียนโค้ด จึงต้องมี tracking plan ที่ชัดเจน</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q8</span>จะตรวจยังไงว่า tracking ทำงานถูกต้อง</summary><div class="ans">
+      <p class="say">ใช้ GTM Preview หรือ Tag Assistant ดูว่า tag ทำงานถูกจังหวะไหม และค่า variable ถูกไหม ต่อด้วย GA4 DebugView ดูว่า event กับ parameter เข้ามาครบ ดู Realtime และเปิด DevTools แท็บ Network ดู request <code>/g/collect</code> หลังผ่านไป 24–48 ชั่วโมงก็กลับมาเช็กในรายงานจริงอีกครั้ง</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q9</span>ติดตั้งแล้วแต่ข้อมูลไม่ขึ้นในรายงาน จะไล่ปัญหายังไง</summary><div class="ans">
+      <p class="say">ไล่จากต้นทาง: โค้ด GTM อยู่บนหน้าไหม → Publish แล้วหรือยัง → Measurement ID ถูกไหม → trigger ทำงานไหม → ถูก ad blocker บล็อก หรือ consent เป็น denied หรือเปล่า → request <code>collect</code> ส่งออกไปไหม → รายงานมาตรฐานต้องรอ 24–48 ชั่วโมง → parameter ที่ตั้งเองลงทะเบียน custom dimension หรือยัง → filter internal traffic กรองตัวเราทิ้งไปหรือเปล่า</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q10</span>Users กับ Sessions ต่างกันยังไง แล้ว Engagement rate คืออะไร</summary><div class="ans">
+      <p class="say">Users คือจำนวนคน (นับตามเบราว์เซอร์หรืออุปกรณ์) Sessions คือจำนวนรอบที่เข้ามา คนเดียวเข้า 3 รอบ = 1 user 3 sessions ส่วน Engagement rate คือ % ของ session ที่มีส่วนร่วมจริง คืออยู่เกิน 10 วินาที หรือดู 2 หน้าขึ้นไป หรือเกิด key event และ bounce rate ใน GA4 ก็คือส่วนกลับของค่านี้</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q11</span>UTM คืออะไร ใช้ตอนไหน</summary><div class="ans">
+      <p class="say">UTM คือ parameter ที่ต่อท้ายลิงก์เพื่อบอก GA4 ว่าคนมาจากไหน หลักๆ มี <code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code> และมี utm_content, utm_term เสริม ใช้กับลิงก์ที่ส่งออกไปข้างนอก เช่น โฆษณา, LINE OA, SMS, อีเมล ต้องตั้งชื่อเป็นตัวพิมพ์เล็กให้ตรงกันทั้งทีม และห้ามใช้กับลิงก์ภายในเว็บตัวเอง</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q12</span>หัวหน้าถามว่าแคมเปญไหนพาคนสมัครบัตรได้ดีที่สุด จะดูยังไง</summary><div class="ans">
+      <p class="say">ไปที่ Traffic acquisition เปลี่ยน dimension เป็น Session campaign หรือ source/medium แล้วเลือกคอลัมน์ Key events ให้นับเฉพาะ generate_lead ดูทั้งจำนวนและ session key event rate เพราะช่องทางที่คนเยอะอาจสมัครน้อย ถ้าจะดูว่าแต่ละช่องทางมีส่วนช่วยแค่ไหนตลอดเส้นทางของลูกค้า ให้ดูรายงาน attribution ในส่วน Advertising เพิ่ม</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q13</span>Funnel exploration ใช้ทำอะไร</summary><div class="ans">
+      <p class="say">ใช้ดูว่าคนผ่านแต่ละขั้นตอนไปกี่ % และหลุดตรงไหน เช่น เข้าเว็บ → กดสมัคร → ส่งใบสมัคร ถ้าหลุดมากหลังกดสมัคร แปลว่าฟอร์มน่าจะมีปัญหา แยก breakdown ตามอุปกรณ์ได้ เพื่อดูว่ามือถือมีปัญหามากกว่าหรือเปล่า แล้วเสนอให้ปรับแล้ววัดผลซ้ำ</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q14</span>ข้อมูลแบบไหนห้ามส่งเข้า GA4 จะป้องกันยังไง</summary><div class="ans">
+      <p class="say">ห้ามส่ง PII เช่น ชื่อ, เบอร์โทร, อีเมล, เลขบัตรประชาชน, เลขบัตรเครดิต เพราะผิดนโยบาย Google และเสี่ยงผิด PDPA วิธีป้องกันคือกำหนดใน tracking plan ให้ชัดว่าส่ง parameter อะไรบ้าง ใช้ค่าเป็นช่วงแทนตัวเลขจริง ให้ฟอร์มใช้ POST และไม่ใส่ข้อมูลใน URL review dataLayer ก่อนขึ้นจริง และสุ่มตรวจ page_location เป็นระยะ</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q15</span>Consent Mode คืออะไร เกี่ยวกับ PDPA ยังไง</summary><div class="ans">
+      <p class="say">Consent Mode เป็นกลไกที่ทำให้ Google tag ทำงานตามความยินยอมที่ผู้ใช้เลือกบนแบนเนอร์ ผ่านสถานะ analytics_storage, ad_storage, ad_user_data, ad_personalization เริ่มจาก default เป็น denied แล้ว update เป็น granted เมื่อผู้ใช้ยอมรับ ช่วยให้เว็บเคารพการตัดสินใจของผู้ใช้ตามแนวทาง PDPA ส่วนนโยบายว่าต้องขออะไร เป็นงานของฝ่ายกฎหมาย หน้าที่ของเราคือติดตั้งให้ถูกต้องและทดสอบให้แน่ใจ</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q16</span>เว็บ React / Next.js (SPA) จะวัด page_view ยังไง</summary><div class="ans">
+      <p class="say">SPA เปลี่ยนหน้าโดยไม่ reload ทั้งหน้า Enhanced measurement ของ GA4 มีตัวเลือก “Page changes based on browser history events” ที่จับการเปลี่ยน URL ผ่าน History API ให้เอง ถ้าอยากควบคุมเอง เช่น รอให้ title เปลี่ยนก่อน ก็ปิดตัวเลือกนั้น แล้ว push event ตอน route เปลี่ยนเอง ไม่ว่าจะใช้วิธีไหน ต้องทดสอบว่า page_view ไม่ถูกนับซ้ำ</p>
+      <p class="muted" style="font-size:14.5px">คำถามนี้คนสาย Frontend ตอบได้ดีกว่าคนสายการตลาด ใช้เป็นจุดเด่นได้</p>
+    </div></details>
+    <details class="qa"><summary><span class="qn">Q17</span>หลัง deploy ตัวเลขในรายงานเพิ่มขึ้นเกือบ 2 เท่าทันที คิดว่าเกิดอะไรขึ้น</summary><div class="ans">
+      <p class="say">น่าจะติด tag ซ้ำ เช่น มีทั้งโค้ด gtag และ GTM ส่งไป ID เดียวกัน หรือมี container 2 ตัว หรือมี Google tag 2 ตัวใน container เดียว ตรวจได้จาก DevTools Network ว่ามี request page_view 2 ครั้งต่อการโหลดหน้าหรือเปล่า และดูใน Tag Assistant ว่ามี tag ทำงานซ้ำไหม</p>
+    </div></details>
+
+    <h3 class="sub"><span class="no">7.3</span>คำถามที่ควรถามกลับผู้สัมภาษณ์</h3>
+    <ul>
+      <li>ตอนนี้ทีมใช้ GTM อยู่หรือเปล่า และใครเป็นคนดูแลการ publish</li>
+      <li>มี tracking plan หรือ naming convention ที่ใช้ร่วมกันอยู่แล้วไหม</li>
+      <li>ใช้เครื่องมืออะไรจัดการ cookie consent</li>
+      <li>รายงานไหนที่ทีมดูบ่อยที่สุด ดูใน GA4 โดยตรงหรือผ่าน Looker Studio</li>
+    </ul>
+    <div class="callout good"><span class="ci">🎓</span><div><span class="t">ถ้ามีเวลาเหลือ: สอบใบรับรองฟรีจาก Google</span><a href="https://skillshop.withgoogle.com" target="_blank" rel="noopener">Google Skillshop</a> มีคอร์สและข้อสอบ <b>Google Analytics Certification</b> ให้ทำฟรี ถ้าสอบผ่านก่อนวันสัมภาษณ์ ใส่ในเรซูเม่ได้ทันที</div></div>
+
+    <h3 class="sub"><span class="no">7.4</span>Checklist ก่อนวันสัมภาษณ์</h3>
+    <div class="mission" style="margin-top:12px">
+      <h4>✅ พร้อมแล้วหรือยัง</h4>
+      <label><input type="checkbox" data-id="d7-1"><span>อธิบาย GA4 ได้ภายใน 1 นาที</span></label>
+      <label><input type="checkbox" data-id="d7-2"><span>วาดภาพ Account → Property → Data stream ให้คนอื่นดูได้</span></label>
+      <label><input type="checkbox" data-id="d7-3"><span>อธิบาย Tag / Trigger / Variable พร้อมยกตัวอย่าง</span></label>
+      <label><input type="checkbox" data-id="d7-4"><span>เล่าขั้นตอนวัดปุ่มสมัครได้ 8 ขั้น (Q6)</span></label>
+      <label><input type="checkbox" data-id="d7-5"><span>พูดเรื่อง PII และ Consent Mode ได้</span></label>
+      <label><input type="checkbox" data-id="d7-6"><span>มีภาพหน้าจองานฝึก 3 รูปในมือถือ</span></label>
+      <label><input type="checkbox" data-id="d7-7"><span>ทวนคำศัพท์ท้ายบทเรียนครบแล้ว</span></label>
+    </div>
+    <div class="quiz" data-quiz="day7"></div>
+    <div class="done-row"><p>จบคอร์สแล้ว! ขอให้สัมภาษณ์ผ่านนะ 🍀</p><button class="done-btn" type="button" data-done="7" aria-pressed="false">✓ เรียนจบวันที่ 7</button></div>
+  </section>
+
+  <!-- ============================== GLOSSARY ============================== -->
+  <section class="block" id="glossary">
+    <div class="day-head">
+      <span class="day-badge" style="background:var(--violet)">ท้ายเล่ม</span>
+      <h2>คำศัพท์ไทย–อังกฤษ</h2>
+      <div class="day-meta">พิมพ์ค้นหาได้ทั้งภาษาไทยและอังกฤษ</div>
+    </div>
+    <input class="gloss-search js-gloss-search" type="search" placeholder="🔍 ค้นหาคำศัพท์ เช่น session, คุกกี้, trigger…" aria-label="ค้นหาคำศัพท์">
+    <div class="gloss js-gloss">
+      <div><b>Account</b><span class="th">บัญชี</span><br>ชั้นบนสุดของ GA4 แทนบริษัทหรือองค์กร ข้างในมีได้หลาย property</div>
+      <div><b>Property</b><span class="th">พร็อพเพอร์ตี้</span><br>ที่เก็บรายงาน 1 ชุด มีเขตเวลาและสกุลเงินของตัวเอง</div>
+      <div><b>Data stream</b><span class="th">สตรีมข้อมูล</span><br>“ท่อ” ที่ข้อมูลไหลเข้า property แยกเป็นเว็บ, iOS และ Android</div>
+      <div><b>Measurement ID</b><span class="th">รหัสวัดผล</span><br>รหัส <code>G-XXXXXXXXXX</code> ของ web stream บอกว่าข้อมูลต้องส่งไป property ไหน</div>
+      <div><b>Event</b><span class="th">เหตุการณ์</span><br>ทุกการกระทำที่ถูกบันทึก เช่น <code>page_view</code>, <code>apply_click</code></div>
+      <div><b>Parameter</b><span class="th">พารามิเตอร์</span><br>รายละเอียดที่แนบไปกับ event เช่น <code>card_type</code></div>
+      <div><b>Enhanced measurement</b><span class="th">การวัดผลแบบเพิ่มประสิทธิภาพ</span><br>สวิตช์ที่เปิดแล้ว GA4 เก็บ scroll, คลิกลิงก์ออกนอกเว็บ, ดาวน์โหลดไฟล์ ฯลฯ ให้เอง</div>
+      <div><b>Recommended event</b><span class="th">event ที่ Google แนะนำ</span><br>ชื่อ event มาตรฐาน เช่น <code>generate_lead</code>, <code>sign_up</code> ใช้แล้ว GA4 เข้าใจความหมาย</div>
+      <div><b>Custom event</b><span class="th">event ที่ตั้งชื่อเอง</span><br>ใช้เมื่อไม่มีชื่อมาตรฐานที่ตรง ตั้งชื่อแบบ snake_case</div>
+      <div><b>Key event</b><span class="th">เหตุการณ์สำคัญ (เดิมคือ Conversion)</span><br>event ที่เป็นเป้าหมายธุรกิจ เช่น ส่งใบสมัครสำเร็จ</div>
+      <div><b>Conversion (Google Ads)</b><span class="th">คอนเวอร์ชัน</span><br>ปัจจุบันหมายถึง key event ที่นำไปใช้วัดผลและปรับแคมเปญใน Google Ads</div>
+      <div><b>Users / Active users</b><span class="th">ผู้ใช้</span><br>จำนวนคน (นับตามเบราว์เซอร์หรืออุปกรณ์) รายงาน GA4 ส่วนใหญ่ใช้ Active users</div>
+      <div><b>Session</b><span class="th">รอบการเข้าชม</span><br>การเข้าเว็บ 1 รอบ จบเมื่อไม่มีการใช้งานเกิน 30 นาที</div>
+      <div><b>Engaged session</b><span class="th">รอบที่มีส่วนร่วม</span><br>อยู่นานกว่า 10 วินาที หรือดู 2 หน้าขึ้นไป หรือเกิด key event</div>
+      <div><b>Engagement rate / Bounce rate</b><span class="th">อัตรามีส่วนร่วม / อัตราตีกลับ</span><br>% ของ engaged session ส่วน bounce rate = 100% − engagement rate</div>
+      <div><b>Dimension</b><span class="th">มิติ</span><br>“แบ่งตามอะไร” เป็นข้อความ เช่น ประเทศ, อุปกรณ์, ช่องทาง</div>
+      <div><b>Metric</b><span class="th">ตัวชี้วัด</span><br>“นับได้เท่าไหร่” เป็นตัวเลข เช่น Users, Sessions, Key events</div>
+      <div><b>Custom dimension</b><span class="th">มิติที่สร้างเอง</span><br>การลงทะเบียน parameter ให้ใช้ในรายงานได้ เก็บข้อมูลไม่ย้อนหลัง</div>
+      <div><b>Realtime</b><span class="th">เรียลไทม์</span><br>รายงานกิจกรรมในช่วง 30 นาทีล่าสุด ใช้เช็กว่าติดตั้งได้ผล</div>
+      <div><b>DebugView</b><span class="th">มุมมองดีบัก</span><br>ดู event จากเครื่องที่กำลังทดสอบแบบสดๆ อยู่ที่ Admin › Data display</div>
+      <div><b>Explore / Exploration</b><span class="th">การสำรวจข้อมูล</span><br>เมนูสร้างรายงานเอง เช่น Free form, Funnel, Path</div>
+      <div><b>Funnel exploration</b><span class="th">กรวยขั้นตอน</span><br>ดูว่าคนผ่านแต่ละขั้นกี่ % และหลุดตรงไหน</div>
+      <div><b>Default channel group</b><span class="th">กลุ่มช่องทางมาตรฐาน</span><br>การจัดที่มาเป็นกลุ่ม เช่น Organic Search, Paid Social, Direct, Referral</div>
+      <div><b>Source / Medium</b><span class="th">แหล่งที่มา / สื่อ</span><br>source = มาจากไหน (google, facebook) · medium = ประเภทช่องทาง (cpc, email)</div>
+      <div><b>UTM parameters</b><span class="th">ป้ายติดลิงก์</span><br><code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code> ฯลฯ ต่อท้ายลิงก์เพื่อบอกที่มา</div>
+      <div><b>Attribution</b><span class="th">การให้เครดิตช่องทาง</span><br>วิธีแบ่งเครดิตของ key event ให้ช่องทางต่างๆ ที่ลูกค้าเคยผ่านมา</div>
+      <div><b>GTM (Google Tag Manager)</b><span class="th">ตัวจัดการแท็ก</span><br>เครื่องมือรวมและจัดการ tag ทุกตัวของเว็บไว้ที่เดียว</div>
+      <div><b>Container</b><span class="th">คอนเทนเนอร์</span><br>กล่องเก็บ tag, trigger, variable ของเว็บหนึ่งเว็บ รหัส <code>GTM-XXXXXXX</code></div>
+      <div><b>Tag</b><span class="th">แท็ก</span><br>“ทำอะไร” โค้ดที่ทำงาน เช่น ส่ง event ไป GA4</div>
+      <div><b>Trigger</b><span class="th">ทริกเกอร์</span><br>“เมื่อไหร่” เงื่อนไขที่ทำให้ tag ทำงาน</div>
+      <div><b>Variable</b><span class="th">ตัวแปร</span><br>“ใช้ข้อมูลอะไร” ค่าที่ดึงมาใช้ใน tag หรือ trigger</div>
+      <div><b>Data Layer Variable (DLV)</b><span class="th">ตัวแปรจาก dataLayer</span><br>variable ที่อ่านค่าจากสิ่งที่เว็บ push เข้า dataLayer</div>
+      <div><b>dataLayer</b><span class="th">ดาต้าเลเยอร์</span><br>JavaScript array ที่เว็บใช้ส่งข้อมูลให้ GTM เหมือนกล่องจดหมาย</div>
+      <div><b>Google tag / gtag.js</b><span class="th">กูเกิลแท็ก</span><br>โค้ดพื้นฐานที่โหลด GA4 ฝังตรงในเว็บ (gtag.js) หรือสร้างใน GTM ก็ได้</div>
+      <div><b>Preview / Tag Assistant</b><span class="th">โหมดทดสอบ</span><br>ทดลอง container บนเครื่องตัวเองก่อน Publish ดูว่า tag ไหนทำงาน</div>
+      <div><b>Workspace · Version · Publish</b><span class="th">พื้นที่ทำงาน · เวอร์ชัน · เผยแพร่</span><br>แก้ใน workspace → Submit เป็น version → Publish ขึ้นเว็บจริง ย้อนกลับได้</div>
+      <div><b>Tracking plan / Measurement plan</b><span class="th">แผนการวัดผล</span><br>ตารางที่ระบุว่าจะวัดอะไร ชื่อ event อะไร ส่ง parameter อะไร</div>
+      <div><b>PII</b><span class="th">ข้อมูลระบุตัวบุคคล</span><br>ชื่อ, เบอร์โทร, อีเมล, เลขบัตรประชาชน ห้ามส่งเข้า GA4</div>
+      <div><b>PDPA</b><span class="th">พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</span><br>กฎหมายไทยเรื่องการเก็บและใช้ข้อมูลส่วนบุคคล รวมถึงคุกกี้</div>
+      <div><b>Consent Mode</b><span class="th">โหมดความยินยอม</span><br>กลไกให้ Google tag ทำงานตามที่ผู้ใช้ยินยอม (default → update)</div>
+      <div><b>CMP</b><span class="th">ระบบจัดการความยินยอม</span><br>Consent Management Platform บริการแบนเนอร์คุกกี้สำเร็จรูป เช่น OneTrust</div>
+      <div><b>Data retention</b><span class="th">ระยะเวลาเก็บข้อมูล</span><br>ระยะที่ GA4 เก็บข้อมูลละเอียดไว้ใช้ใน Explore (2 หรือ 14 เดือน)</div>
+      <div><b>Internal traffic</b><span class="th">ทราฟฟิกภายใน</span><br>การเข้าเว็บของพนักงานเอง ควรกรองออกด้วย IP</div>
+      <div><b>Unwanted referral</b><span class="th">ที่มาที่ไม่ต้องการ</span><br>เว็บภายนอกในขั้นตอนสมัคร (เช่น payment) ที่ไม่ควรนับเป็นที่มา</div>
+      <div><b>Cross-domain measurement</b><span class="th">การวัดผลข้ามโดเมน</span><br>ทำให้คนเดียวที่เดินข้ามโดเมนถูกนับเป็นคนเดียวกัน</div>
+      <div><b>SPA</b><span class="th">เว็บหน้าเดียว</span><br>Single Page Application เช่น React, Next.js เปลี่ยนหน้าโดยไม่ reload</div>
+      <div><b>Looker Studio</b><span class="th">ลุคเกอร์สตูดิโอ</span><br>เครื่องมือฟรีของ Google ใช้ทำ dashboard จาก GA4</div>
+      <div><b>BigQuery</b><span class="th">บิ๊กเควียรี</span><br>ฐานข้อมูลบนคลาวด์ของ Google รับข้อมูลดิบจาก GA4 ไปวิเคราะห์ต่อ</div>
+    </div>
+    <p class="muted js-gloss-empty" style="display:none">ไม่พบคำนี้ ลองพิมพ์คำอื่นดู</p>
+  </section>
+
+  <footer class="foot">
+    <p><b>หมายเหตุ:</b> เนื้อหาอ้างอิงหน้าจอ GA4 และ GTM ณ เดือนตุลาคม 2026 Google ปรับหน้าตาเป็นระยะ ถ้าชื่อเมนูไม่ตรง ให้ใช้ช่อง Search ใน GA4 หรือดูคู่มือทางการ · หน้าจอในบทเรียนเป็นภาพจำลองที่วาดใหม่ให้ดูง่าย ตัวเลขทั้งหมดเป็นตัวเลขสมมติ · “DemoCard” เป็นแบรนด์สมมติ</p>
+    <ul>
+      <li><a href="https://support.google.com/analytics" target="_blank" rel="noopener">Google Analytics Help Center</a></li>
+      <li><a href="https://support.google.com/tagmanager" target="_blank" rel="noopener">Google Tag Manager Help Center</a></li>
+      <li><a href="https://support.google.com/analytics/answer/6367342" target="_blank" rel="noopener">GA4 Demo Account</a></li>
+      <li><a href="https://ga-dev-tools.google/campaign-url-builder/" target="_blank" rel="noopener">Campaign URL Builder</a></li>
+      <li><a href="https://skillshop.withgoogle.com" target="_blank" rel="noopener">Google Skillshop (ใบรับรองฟรี)</a></li>
+    </ul>
+  </footer>
+
+  </div>
+</main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- saved progress ---------- */
+  var KEY = 'ga4course:v1';
+  var state = { done: {}, m: {} };
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) { var saved = JSON.parse(raw); state.done = saved.done || {}; state.m = saved.m || {}; }
+  } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var doneBtns = Array.prototype.slice.call(document.querySelectorAll('[data-done]'));
+  function refresh() {
+    var n = 0;
+    for (var d = 1; d <= 7; d++) {
+      var isDone = !!state.done[d];
+      if (isDone) n++;
+      var link = document.querySelector('.toc a[data-sec="day' + d + '"]');
+      if (link) {
+        link.classList.toggle('done', isDone);
+        link.querySelector('.st').textContent = isDone ? '✓' : String(d);
+      }
+    }
+    doneBtns.forEach(function (b) {
+      var on = !!state.done[b.getAttribute('data-done')];
+      var day = b.getAttribute('data-done');
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.textContent = on ? '↺ ยกเลิก “เรียนจบ” วันที่ ' + day : '✓ เรียนจบวันที่ ' + day;
+    });
+    document.querySelectorAll('.js-done-count').forEach(function (el) { el.textContent = n; });
+    var bar = document.querySelector('.js-progress');
+    if (bar) bar.style.width = (n / 7 * 100) + '%';
+  }
+  doneBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var d = b.getAttribute('data-done');
+      if (state.done[d]) { delete state.done[d]; } else { state.done[d] = 1; }
+      save(); refresh();
+      if (state.done[d]) {
+        var next = document.getElementById('day' + (Number(d) + 1)) || document.getElementById('glossary');
+        if (next) next.scrollIntoView();
+      }
+    });
+  });
+
+  document.querySelectorAll('.mission input[type=checkbox][data-id]').forEach(function (cb) {
+    var id = cb.getAttribute('data-id');
+    cb.checked = !!state.m[id];
+    cb.addEventListener('change', function () {
+      if (cb.checked) { state.m[id] = 1; } else { delete state.m[id]; }
+      save();
+    });
+  });
+
+  /* ---------- quizzes ---------- */
+  var QUIZ = {
+    day1: [
+      { q: 'ถ้าคุณเข้าเว็บตอนเช้า 1 ครั้ง และตอนเย็นอีก 1 ครั้ง จากคอมเครื่องเดิมและเบราว์เซอร์เดิม GA4 จะนับว่าอะไร?',
+        o: ['2 Users, 2 Sessions', '1 User, 2 Sessions', '1 User, 1 Session', '2 Users, 1 Session'], a: 1,
+        e: 'เป็นคนเดิม (เบราว์เซอร์เดิม) จึงนับ 1 user แต่เข้ามา 2 รอบห่างกันเกิน 30 นาที จึงนับ 2 sessions' },
+      { q: 'Measurement ID ของ web stream ใน GA4 ขึ้นต้นด้วยอะไร?',
+        o: ['UA-', 'GTM-', 'G-', 'ID-'], a: 2,
+        e: '<code>G-</code> คือ GA4 ส่วน <code>GTM-</code> เป็นรหัส container ของ Tag Manager และ <code>UA-</code> เป็นรุ่นเก่าที่เลิกใช้แล้ว' },
+      { q: 'ข้อไหนเป็น Dimension?',
+        o: ['Users', 'Device category', 'Sessions', 'Event count'], a: 1,
+        e: 'Dimension คือ “แบ่งตามอะไร” (ข้อความ) ส่วนข้ออื่นเป็นตัวเลข จึงเป็น Metric' },
+      { q: '“Key event” คืออะไร?',
+        o: ['event ที่ GA4 สร้างให้อัตโนมัติทุกครั้ง', 'event ที่สำคัญต่อเป้าหมายธุรกิจ เช่น ส่งใบสมัครสำเร็จ', 'รหัสผ่านสำหรับเข้า GA4', 'event ที่เกิดบ่อยที่สุดในเว็บ'], a: 1,
+        e: 'Key event คือ event ที่เราเลือกเองว่าสำคัญต่อธุรกิจ เดิมเรียกว่า Conversion' }
+    ],
+    day2: [
+      { q: 'ทำไมไม่ควรเปิดหน้าเว็บฝึกด้วยการดับเบิลคลิกไฟล์?',
+        o: ['เพราะไฟล์จะเสีย', 'เพราะจะเปิดเป็น file:/// ซึ่ง GA4 เก็บคุกกี้ไม่ได้และ Tag Assistant เชื่อมต่อไม่ได้', 'เพราะ Google ไม่อนุญาตให้ใช้กับเว็บฟรี', 'ไม่มีผลอะไร เปิดแบบไหนก็ได้'], a: 1,
+        e: 'ต้องเปิดผ่าน http:// เช่น Live Server เครื่องมือของ Google ถึงจะทำงานได้ตามปกติ' },
+      { q: 'Enhanced measurement ทำอะไร?',
+        o: ['ทำให้เว็บโหลดเร็วขึ้น', 'เก็บ event พื้นฐาน เช่น scroll, คลิกลิงก์ออกนอกเว็บ, ดาวน์โหลดไฟล์ ให้อัตโนมัติ', 'กรองบอทออกจากข้อมูล', 'ส่งรายงานทางอีเมลทุกวัน'], a: 1,
+        e: 'แค่เปิดสวิตช์ใน Data stream ก็ได้ event เหล่านี้โดยไม่ต้องเขียนโค้ดเพิ่ม' },
+      { q: 'ติดโค้ดเสร็จแล้ว อยากเช็กทันทีว่าข้อมูลเข้า ควรดูรายงานไหน?',
+        o: ['Traffic acquisition', 'Realtime overview', 'Funnel exploration', 'Reports snapshot ของเมื่อวาน'], a: 1,
+        e: 'Realtime แสดงข้อมูลภายในไม่กี่วินาที ส่วนรายงานมาตรฐานใช้เวลา 24–48 ชั่วโมง' },
+      { q: 'ถ้าไม่เปลี่ยน Data retention จากค่าเริ่มต้น จะเกิดอะไรขึ้น?',
+        o: ['GA4 จะหยุดเก็บข้อมูล', 'เมนู Explore จะดูข้อมูลย้อนหลังได้แค่ 2 เดือน', 'Realtime จะใช้ไม่ได้', 'ไม่มีผลอะไร'], a: 1,
+        e: 'ค่าเริ่มต้นคือ 2 เดือน ควรเปลี่ยนเป็น 14 เดือนตั้งแต่วันแรก' }
+    ],
+    day3: [
+      { q: '“เมื่อมีคนกดปุ่มสมัคร” คือส่วนไหนใน GTM?',
+        o: ['Tag', 'Trigger', 'Variable', 'Container'], a: 1,
+        e: 'Trigger คือ “เมื่อไหร่” ส่วน Tag คือ “ทำอะไร” และ Variable คือ “ใช้ข้อมูลอะไร”' },
+      { q: 'ถ้าหน้าเว็บมีทั้งโค้ด gtag (G-) และ GTM ที่มี Google tag ID เดียวกัน จะเกิดอะไรขึ้น?',
+        o: ['GTM จะปิด gtag ให้เอง', 'ข้อมูลถูกนับซ้ำ', 'ข้อมูลแม่นยำขึ้น 2 เท่า', 'GA4 จะแจ้งเตือนแล้วรวมให้เอง'], a: 1,
+        e: 'ทั้ง 2 ตัวส่ง page_view แยกกัน ตัวเลขจึงเพิ่มเป็นราว 2 เท่า ควรเลือกใช้วิธีเดียว' },
+      { q: 'แก้ tag ใน GTM เสร็จแล้วกด Save แต่บนเว็บจริงยังไม่เปลี่ยน เพราะอะไร?',
+        o: ['ต้องรอ 48 ชั่วโมง', 'ยังไม่ได้ Submit และ Publish', 'ต้องล้างแคชของ Google', 'Save ไม่ถูกปุ่ม'], a: 1,
+        e: 'Save เป็นแค่การบันทึกใน workspace ต้อง Submit → Publish ก่อน การเปลี่ยนแปลงถึงจะขึ้นเว็บจริง' },
+      { q: 'Google tag ใน GTM ควรใช้ trigger ตัวไหน?',
+        o: ['Click - All Elements', 'Initialization - All Pages', 'Window Loaded', 'Custom Event'], a: 1,
+        e: 'Initialization - All Pages ทำงานเร็วที่สุดในทุกหน้า ก่อน tag ตัวอื่นๆ' }
+    ],
+    day4: [
+      { q: 'ส่งฟอร์มสมัครบัตรสำเร็จ ควรตั้งชื่อ event ว่าอะไร?',
+        o: ['Submit Form!', 'ส่งฟอร์มสำเร็จ', 'generate_lead', 'formSubmit123'], a: 2,
+        e: '<code>generate_lead</code> เป็น Recommended event ที่ตรงความหมาย และเขียนแบบ snake_case' },
+      { q: 'ใน <code>dataLayer.push({...})</code> key ไหนที่ GTM ใช้ตัดสินว่า Custom Event ไหนเกิดขึ้น?',
+        o: ['name', 'event', 'type', 'trigger'], a: 1,
+        e: 'key <code>event</code> เป็นตัวพิเศษ ค่าของมันต้องตรงกับ Event name ใน trigger ประเภท Custom Event' },
+      { q: 'ส่ง <code>card_type</code> ไปแล้ว เห็นใน DebugView แต่ไม่เห็นในรายงาน สาเหตุที่เป็นไปได้มากที่สุดคือ?',
+        o: ['GTM เสีย', 'ยังไม่ได้สร้าง Custom dimension สำหรับ card_type', 'ต้องเปลี่ยนชื่อเป็นภาษาไทย', 'ต้องตั้งเป็น Key event ก่อน'], a: 1,
+        e: 'parameter ที่ตั้งเองต้องลงทะเบียนเป็น custom dimension และข้อมูลจะเริ่มเข้าตั้งแต่ตอนที่สร้างเท่านั้น' },
+      { q: 'ข้อไหน <b>ห้าม</b> ส่งเข้า GA4?',
+        o: ['ประเภทบัตรที่เลือก', 'ช่วงรายได้ เช่น 30k_50k', 'เบอร์โทรศัพท์ของผู้สมัคร', 'ตำแหน่งของปุ่มที่กด'], a: 2,
+        e: 'เบอร์โทรเป็น PII ซึ่งผิดนโยบายของ Google และเสี่ยงผิด PDPA' }
+    ],
+    day5: [
+      { q: 'อยากรู้ว่าช่องทางไหนพาคนมาสมัครบัตรได้มากที่สุด ควรใช้รายงานไหน?',
+        o: ['Realtime overview', 'Traffic acquisition + คอลัมน์ Key events', 'Tech details', 'Pages and screens'], a: 1,
+        e: 'Traffic acquisition แยกตามช่องทาง และเลือกคอลัมน์ Key events ให้นับเฉพาะ generate_lead ได้' },
+      { q: 'แชร์ลิงก์ในแอปแชตโดยไม่ติด UTM GA4 มักจะจัดคนกลุ่มนี้ไว้ในช่องทางไหน?',
+        o: ['Paid Search', 'Direct', 'Email', 'Organic Search'], a: 1,
+        e: 'เมื่อไม่รู้ที่มา GA4 มักจัดไว้ใน Direct จึงต้องติด UTM ให้ลิงก์ที่ส่งออกไป' },
+      { q: '<code>utm_source=Facebook</code> กับ <code>utm_source=facebook</code> ในรายงานจะเป็นยังไง?',
+        o: ['รวมเป็นแถวเดียวกัน', 'แยกเป็น 2 แถว', 'GA4 จะลบตัวที่ซ้ำทิ้ง', 'ขึ้น error'], a: 1,
+        e: 'ตัวพิมพ์เล็กกับใหญ่ถือเป็นคนละค่า จึงควรใช้ตัวพิมพ์เล็กทั้งหมด' },
+      { q: 'Funnel บอกว่าคนหลุดมากที่สุดระหว่าง “กดสมัคร” ไปถึง “ส่งใบสมัคร” ควรสรุปว่าอะไร?',
+        o: ['โฆษณาไม่ดี', 'ปัญหาน่าจะอยู่ที่ฟอร์มสมัคร', 'GA4 นับผิด', 'ต้องเพิ่มปุ่มสมัครอีก'], a: 1,
+        e: 'คนตั้งใจสมัครแล้วแต่ไปไม่ถึง จึงควรตรวจฟอร์ม เช่น ความยาว การใช้บนมือถือ และข้อความ error' }
+    ],
+    day6: [
+      { q: 'หน้าขอบคุณมี URL <code>/thank-you?email=somchai@mail.com</code> ปัญหาคืออะไร?',
+        o: ['URL ยาวเกินไป', 'อีเมลรั่วเข้า GA4 ผ่าน page_location', 'GA4 นับหน้านี้ไม่ได้', 'ไม่มีปัญหา'], a: 1,
+        e: 'GA4 เก็บ URL เต็มของทุกหน้า PII ที่อยู่ใน URL จึงหลุดเข้าไปด้วย' },
+      { q: '<code>analytics_storage: \'denied\'</code> หมายความว่าอะไร?',
+        o: ['GA4 ถูกปิดถาวร', 'ผู้ใช้ยังไม่อนุญาตให้ใช้คุกกี้สำหรับการวิเคราะห์', 'เว็บโดนแฮก', 'ข้อมูลถูกลบ'], a: 1,
+        e: 'เมื่อเป็น denied, GA4 จะไม่เขียนคุกกี้ จนกว่าจะได้รับ update เป็น granted' },
+      { q: 'หน้าเว็บหลักกับหน้าสมัครอยู่คนละโดเมน ต้องตั้งค่าอะไร?',
+        o: ['Data retention', 'Cross-domain (Configure your domains)', 'Custom dimension', 'Key event'], a: 1,
+        e: 'ถ้าไม่ตั้ง คนเดียวที่เดินข้ามโดเมนจะถูกนับเป็น 2 คน และที่มาของ session จะหาย' },
+      { q: 'ใครควรเป็นคนตัดสินว่าแบนเนอร์คุกกี้ต้องขอความยินยอมเรื่องอะไรบ้าง?',
+        o: ['Web master ตัดสินเอง', 'ฝ่ายกฎหมายหรือ DPO โดยมี Web master ติดตั้งให้ถูกต้อง', 'Google', 'ผู้ใช้แต่ละคน'], a: 1,
+        e: 'นโยบายเป็นเรื่องของฝ่ายกฎหมาย ส่วนหน้าที่ของเราคือทำให้ tag ทำงานตามนั้นจริง และทดสอบให้แน่ใจ' }
+    ],
+    day7: [
+      { q: 'ข้อมูลปุ่มสมัครหายไปตั้งแต่เมื่อวาน หลังจากทีม content แก้ข้อความบนปุ่ม สาเหตุน่าจะเป็นอะไร?',
+        o: ['GA4 ล่ม', 'trigger ผูกเงื่อนไขไว้กับ Click Text', 'Data retention หมดอายุ', 'Consent หมดอายุ'], a: 1,
+        e: 'นี่คือเหตุผลที่ปุ่มสำคัญควรใช้ dataLayer หรืออย่างน้อยผูกกับ ID แทนข้อความ' },
+      { q: 'ลำดับไหนถูกต้องเมื่อจะเพิ่ม tracking ใหม่?',
+        o: ['Publish → ทดสอบ → เขียนแผน', 'เขียน Tracking plan → ตั้งค่า GTM → Preview/DebugView → Publish', 'ตั้งค่า GTM → Publish → ค่อยถามทีมว่าอยากได้อะไร', 'แก้โค้ดเว็บ → Publish → ไม่ต้องทดสอบ'], a: 1,
+        e: 'วางแผนก่อน ทดสอบก่อน Publish ทุกครั้ง แล้วตั้งชื่อเวอร์ชันให้ชัด' },
+      { q: 'ลิงก์โฆษณาบน TikTok ควรติด UTM แบบไหน?',
+        o: ['<code>utm_source=TikTok&amp;utm_medium=Paid Social</code>', '<code>utm_source=tiktok&amp;utm_medium=paid_social&amp;utm_campaign=cashback_nov2026</code>', 'ไม่ต้องติด GA4 รู้เอง', '<code>utm_campaign=โฆษณา</code>'], a: 1,
+        e: 'ตัวพิมพ์เล็กทั้งหมด ใช้ _ แทนช่องว่าง และมีครบ 3 ตัวหลัก' },
+      { q: 'อยากใช้ <code>card_type</code> ใน Explore ต้องทำอะไร?',
+        o: ['สร้าง Custom dimension แบบ Event scope', 'ตั้งเป็น Key event', 'เปิด Enhanced measurement', 'ไม่ต้องทำอะไร'], a: 0,
+        e: 'parameter ที่ตั้งชื่อเองต้องลงทะเบียนเป็น custom dimension ก่อน' },
+      { q: 'เรื่อง consent งานไหนเป็นหน้าที่ของ Web master มากที่สุด?',
+        o: ['เขียนกฎหมาย PDPA', 'ติดตั้งแบนเนอร์และ Consent Mode ให้ tag ทำงานตามที่ผู้ใช้เลือก', 'ตัดสินว่าใครถูกใครผิด', 'ไม่ต้องสนใจ'], a: 1,
+        e: 'ติดตั้งให้ถูก ทดสอบสถานะ denied/granted ใน Tag Assistant และไม่ส่ง PII' }
+    ]
+  };
+
+  document.querySelectorAll('[data-quiz]').forEach(function (box) {
+    var list = QUIZ[box.getAttribute('data-quiz')];
+    if (!list) return;
+    var head = document.createElement('div');
+    head.className = 'quiz-head';
+    head.innerHTML = '<h4>📝 แบบทดสอบท้ายวัน</h4><span class="quiz-score"></span>';
+    box.appendChild(head);
+    var scoreEl = head.querySelector('.quiz-score');
+    var results = [];
+    function updateScore() {
+      var answered = 0, right = 0;
+      results.forEach(function (r) { if (r !== undefined) { answered++; if (r) right++; } });
+      scoreEl.textContent = answered === list.length
+        ? 'ได้ ' + right + '/' + list.length + (right === list.length ? ' 🎉 เต็ม!' : ' · กด “ลองใหม่” ในข้อที่พลาดได้')
+        : 'ตอบแล้ว ' + answered + '/' + list.length;
+    }
+    list.forEach(function (item, i) {
+      results.push(undefined);
+      var q = document.createElement('div');
+      q.className = 'q';
+      var qt = document.createElement('p');
+      qt.className = 'qt';
+      qt.innerHTML = '<span class="qn">ข้อ ' + (i + 1) + '</span><span>' + item.q + '</span>';
+      q.appendChild(qt);
+      var opts = document.createElement('div');
+      opts.className = 'opts';
+      var buttons = item.o.map(function (text, j) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.innerHTML = String.fromCharCode(65 + j) + '. ' + text;
+        b.addEventListener('click', function () { answer(j); });
+        opts.appendChild(b);
+        return b;
+      });
+      q.appendChild(opts);
+      var fb = document.createElement('div');
+      fb.className = 'fb';
+      fb.setAttribute('aria-live', 'polite');
+      q.appendChild(fb);
+      function answer(j) {
+        var ok = j === item.a;
+        buttons.forEach(function (b, k) {
+          b.disabled = true;
+          if (k === item.a) b.classList.add('right');
+          if (k === j && !ok) b.classList.add('wrong');
+        });
+        fb.innerHTML = (ok ? '<b>✅ ถูกต้อง!</b> ' : '<b>❌ ยังไม่ใช่</b> คำตอบคือข้อ ' + String.fromCharCode(65 + item.a) + ' · ') + item.e +
+          (ok ? '' : ' <button type="button" class="retry">ลองใหม่</button>');
+        var retry = fb.querySelector('.retry');
+        if (retry) retry.addEventListener('click', reset);
+        q.classList.add('answered');
+        results[i] = ok;
+        updateScore();
+      }
+      function reset() {
+        buttons.forEach(function (b) { b.disabled = false; b.classList.remove('right', 'wrong'); });
+        q.classList.remove('answered');
+        fb.innerHTML = '';
+        results[i] = undefined;
+        updateScore();
+      }
+      box.appendChild(q);
+    });
+    updateScore();
+  });
+
+  /* ---------- copy buttons ---------- */
+  document.querySelectorAll('.codebox').forEach(function (box) {
+    var btn = box.querySelector('.copy');
+    var pre = box.querySelector('pre');
+    if (!btn || !pre) return;
+    btn.addEventListener('click', function () {
+      var text = pre.innerText;
+      function done() {
+        btn.textContent = 'คัดลอกแล้ว ✓';
+        btn.classList.add('ok');
+        setTimeout(function () { btn.textContent = 'คัดลอก'; btn.classList.remove('ok'); }, 1600);
+      }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else {
+        fallback();
+      }
+    });
+  });
+
+  /* ---------- table of contents: highlight current section ---------- */
+  var links = {};
+  document.querySelectorAll('.toc a[data-sec]').forEach(function (a) { links[a.getAttribute('data-sec')] = a; });
+  var sections = Object.keys(links).map(function (id) { return document.getElementById(id); }).filter(Boolean);
+  var ticking = false;
+  function spy() {
+    ticking = false;
+    var y = window.scrollY + window.innerHeight * 0.3;
+    var current = null;
+    sections.forEach(function (s) { if (s.offsetTop <= y) current = s; });
+    Object.keys(links).forEach(function (k) { links[k].classList.toggle('active', !!current && k === current.id); });
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+  spy();
+
+  /* ---------- mobile menu ---------- */
+  var body = document.body;
+  function closeNav() { body.classList.remove('nav-open'); }
+  document.querySelector('.js-nav-open').addEventListener('click', function () { body.classList.add('nav-open'); });
+  document.querySelector('.js-scrim').addEventListener('click', closeNav);
+  document.querySelectorAll('.toc a, .brand').forEach(function (a) { a.addEventListener('click', closeNav); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  document.querySelector('.js-theme').addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme');
+    if (!cur) cur = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    var next = cur === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('ga4course:theme', next); } catch (e) {}
+  });
+
+  /* ---------- glossary search ---------- */
+  var search = document.querySelector('.js-gloss-search');
+  var items = Array.prototype.slice.call(document.querySelectorAll('.js-gloss > div'));
+  var empty = document.querySelector('.js-gloss-empty');
+  search.addEventListener('input', function () {
+    var term = search.value.trim().toLowerCase();
+    var shown = 0;
+    items.forEach(function (it) {
+      var hit = !term || it.textContent.toLowerCase().indexOf(term) !== -1;
+      it.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+  });
+
+  refresh();
+})();
+</script>
+</body>
+</html>
